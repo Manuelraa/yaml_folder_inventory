@@ -6,7 +6,7 @@
         msg: Just a test playbook
 
 - name: Deploy nextcloud apache
-  hosts: apache:&nextcloud
+  hosts: nextcloud_apache
   tasks:
     - name: Do nothing
       debug:
