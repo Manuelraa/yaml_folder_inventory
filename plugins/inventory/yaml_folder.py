@@ -103,7 +103,6 @@ class InventoryModule(BaseInventoryPlugin):
 
                 # Allow override of groups by defining the "groups" variable
                 groups = combined_vars.pop("groups", None) or [hosts_path.parent.name]
-                print(groups)
 
                 for group in groups:
                     # Add group if not exist
