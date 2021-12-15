@@ -1,0 +1,13 @@
+namespace: manuelraa
+name: ansible_inventory_yaml_folder
+version: 1.0.0
+readme: README.md
+authors:
+  - Manuel Rapp (https://github.com/Manuelraa)
+description: Recursive folder based yaml inventory
+license_file: null
+tags: []
+repository: https://github.com/Manuelraa/ansible_inventory_yaml_folder
+documentation: null
+homepage: https://github.com/Manuelraa/ansible_inventory_yaml_folder
+issues: https://github.com/Manuelraa/ansible_inventory_yaml_folder/issues

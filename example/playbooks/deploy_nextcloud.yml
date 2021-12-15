@@ -1,0 +1,13 @@
+- name: Deploy nextcloud instance
+  hosts: nextcloud_instance
+  tasks:
+    - name: Do nothing
+      debug:
+        msg: Just a test playbook
+
+- name: Deploy nextcloud apache
+  hosts: apache:&nextcloud
+  tasks:
+    - name: Do nothing
+      debug:
+        msg: Just a test playbook

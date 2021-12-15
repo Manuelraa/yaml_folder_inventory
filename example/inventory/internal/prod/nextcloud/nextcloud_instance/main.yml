@@ -1,0 +1,2 @@
+nextcloud1:
+  ansible_host: nextcloudsrv1.company.localhost
