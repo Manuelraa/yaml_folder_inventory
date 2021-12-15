@@ -1,6 +1,6 @@
 namespace: manuelraa
 name: ansible_inventory_yaml_folder
-version: 1.0.0
+version: 1.0.1
 readme: README.md
 authors:
   - Manuel Rapp (https://github.com/Manuelraa)
