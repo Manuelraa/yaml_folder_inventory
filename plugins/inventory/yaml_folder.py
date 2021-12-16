@@ -21,7 +21,7 @@ EXAMPLES = """
 class InventoryModule(BaseInventoryPlugin):
     """yaml_folder ansible inventory plugin."""
 
-    NAME = "manuelraa.inventory.yaml_folder"
+    NAME = "manuelraa.yaml_folder.yaml_folder"
 
     # Type hints for instance variables set in self.parse
     inventory: InventoryData
@@ -102,6 +102,10 @@ class InventoryModule(BaseInventoryPlugin):
         # Process hosts from host_obj
         if hosts_obj:
             for (host_name_base, host_vars) in hosts_obj.items():
+                # If no vars are define for host object it is parsed as None 
+                if host_vars is None:
+                    host_vars = {}
+
                 # Build host_name
                 host_name = f"{host_name_prefix}{host_name_base}"
 
