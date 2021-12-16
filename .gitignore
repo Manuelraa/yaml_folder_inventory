@@ -1,6 +1,10 @@
+# Ansible galaxy
+*.tar.gz
+
 # VS Code
 .vscode
 
 # Python
 __pycache__
 *.pyc
+venv
