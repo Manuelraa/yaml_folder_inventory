@@ -41,7 +41,7 @@ class InventoryModule(BaseInventoryPlugin):
             if path.endswith("/yaml_folder.yml"):
                 valid = True
         return valid
- 
+
     def parse(self, inventory: InventoryData, loader: DataLoader, path: str, cache: bool = True):
         """Parse the inventory folder. Called by ansible."""
         self.inventory = inventory
@@ -102,7 +102,7 @@ class InventoryModule(BaseInventoryPlugin):
         # Process hosts from host_obj
         if hosts_obj:
             for (host_name_base, host_vars) in hosts_obj.items():
-                # If no vars are define for host object it is parsed as None 
+                # If no vars are define for host object it is parsed as None
                 if host_vars is None:
                     host_vars = {}
 
