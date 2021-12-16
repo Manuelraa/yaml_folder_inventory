@@ -1,5 +1,5 @@
 =====================================================
-manuelraa.ansible_inventory_yaml_folder Release Notes
+manuelraa.yaml_folder_inventory Release Notes
 =====================================================
 
 .. contents:: Topics
