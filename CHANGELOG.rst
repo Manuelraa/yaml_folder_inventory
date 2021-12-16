@@ -8,6 +8,10 @@ manuelraa.ansible_inventory_yaml_folder Release Notes
 v1.0.1
 ======
 
+Minor Changes
+-------------
+- Add type hints and basic docstrings
+
 Bugfixes
 --------
 - Removed debug print from plugin
