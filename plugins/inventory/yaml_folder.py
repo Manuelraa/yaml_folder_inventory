@@ -1,6 +1,9 @@
+"""yaml_folder ansible inventory plugin."""
 from pathlib import Path
 
 from ansible.plugins.inventory import BaseInventoryPlugin
+from ansible.inventory.data import InventoryData
+from ansible.parsing.dataloader import DataLoader
 
 
 DOCUMENTATION = """
@@ -16,15 +19,20 @@ EXAMPLES = """
 
 
 class InventoryModule(BaseInventoryPlugin):
+    """yaml_folder ansible inventory plugin."""
 
     NAME = "manuelraa.inventory.yaml_folder"
+
+    # Type hints for instance variables set in self.parse
+    inventory: InventoryData
+    loader: DataLoader
 
     def __init__(self):
         super().__init__()
 
         # Set in self.parse function
-        self.loader = None
         self.inventory = None
+        self.loader = None
 
     def verify_file(self, path: str) -> bool:
         """Return if the specified inventory path is valid."""
@@ -33,11 +41,11 @@ class InventoryModule(BaseInventoryPlugin):
             if path.endswith("/yaml_folder.yml"):
                 valid = True
         return valid
-
-    def parse(self, inventory, loader, path, cache=True):
+ 
+    def parse(self, inventory: InventoryData, loader: DataLoader, path: str, cache: bool = True):
         """Parse the inventory folder. Called by ansible."""
-        self.loader = loader
         self.inventory = inventory
+        self.loader = loader
 
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
         inventory_folder = Path(path).parent
