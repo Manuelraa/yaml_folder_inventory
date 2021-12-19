@@ -93,4 +93,4 @@ app2:
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
 
 ## Example
-Can be found [here](./example)
+Can be found [here](https://github.com/Manuelraa/yaml_folder_inventory/tree/master/example)
