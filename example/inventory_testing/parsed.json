@@ -1,36 +1,71 @@
 {
+    "__yaml_folder__internal_prod_nextcloud_nextcloud_apache": {
+        "hosts": [
+            "internal-prod-nextcloud-instance1",
+            "internal-prod-nextcloud-nextcloud_apache-apache1"
+        ]
+    },
+    "__yaml_folder__nextcloud_apache": {
+        "hosts": [
+            "customer_one-prod-nextcloud-nextcloud_apache-apache1",
+            "top-level-host"
+        ]
+    },
     "_meta": {
         "hostvars": {
             "customer_one-prod-nextcloud-nextcloud_apache-apache1": {
                 "ansible_host": "apachesrv1.company.localhost",
                 "customer": "customer_one",
                 "env": "prod",
+                "level": 1,
                 "nextcloud_backend": "https://nextcloud.example.com",
-                "root_level_var": "root"
+                "root_level_var": "root",
+                "var_level": 3
             },
             "customer_one-prod-nextcloud-nextcloud_instance-nextcloud1": {
                 "ansible_host": "nextcloudsrv1.company.localhost",
                 "customer": "customer_one",
                 "env": "prod",
-                "root_level_var": "root"
+                "root_level_var": "root",
+                "var_level": 3
+            },
+            "internal-prod-nextcloud-instance1": {
+                "customer": "internal",
+                "env": "prod",
+                "level": 4,
+                "root_level_var": "root",
+                "var_level": 2
             },
             "internal-prod-nextcloud-nextcloud_apache-apache1": {
                 "ansible_host": "apachesrv1.company.localhost",
                 "customer": "internal",
                 "env": "prod",
+                "level": 4,
                 "nextcloud_backend": "https://nextcloud.example.com",
-                "root_level_var": "root"
+                "root_level_var": "root",
+                "var_level": 2
             },
             "internal-prod-nextcloud-nextcloud_instance-nextcloud1": {
                 "ansible_host": "nextcloudsrv1.company.localhost",
                 "customer": "internal",
                 "env": "prod",
-                "root_level_var": "root"
+                "root_level_var": "root",
+                "var_level": 2
+            },
+            "top-level-host": {
+                "ansible_host": "top-level-host.localhost",
+                "level": 1,
+                "root_level_var": "root",
+                "var_level": 1
             }
         }
     },
     "all": {
         "children": [
+            "__yaml_folder__internal_nextcloud_apache",
+            "__yaml_folder__internal_prod_nextcloud_apache",
+            "__yaml_folder__internal_prod_nextcloud_nextcloud_apache",
+            "__yaml_folder__nextcloud_apache",
             "nextcloud_apache",
             "nextcloud_instance",
             "ungrouped"
@@ -39,7 +74,9 @@
     "nextcloud_apache": {
         "hosts": [
             "customer_one-prod-nextcloud-nextcloud_apache-apache1",
-            "internal-prod-nextcloud-nextcloud_apache-apache1"
+            "internal-prod-nextcloud-instance1",
+            "internal-prod-nextcloud-nextcloud_apache-apache1",
+            "top-level-host"
         ]
     },
     "nextcloud_instance": {

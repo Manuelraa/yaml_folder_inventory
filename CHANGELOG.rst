@@ -4,6 +4,22 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.2.0
+======
+Even tho changes here are bugfixes they change the behaviro therefore bigger version bump.
+In general lots of fixes to wrong variable precedence.
+
+Minor Changes
+-------------
+- Update README
+- Sanitize internal tree level group names
+- Don't try parsing non .yml files
+
+Bugfixes
+--------
+- Fix IndexError when defining group_vars yaml file on top level
+- Fix lower level group_vars do not override variables of levels above
+- Fix vars.yml vars not cleaned when going back up in tree therefore also affecting diffrent tree branches
 
 v1.1.0
 ======
