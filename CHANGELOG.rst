@@ -4,6 +4,12 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.?.?
+======
+
+Minor Changes
+-------------
+- Update README
 
 v1.1.0
 ======
