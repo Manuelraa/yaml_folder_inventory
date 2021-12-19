@@ -1,9 +1,11 @@
 """yaml_folder ansible inventory plugin."""
 from pathlib import Path
+from typing import List
 
-from ansible.plugins.inventory import BaseInventoryPlugin
+from ansible.errors import AnsibleError
 from ansible.inventory.data import InventoryData
 from ansible.parsing.dataloader import DataLoader
+from ansible.plugins.inventory import BaseInventoryPlugin
 
 
 DOCUMENTATION = """
@@ -16,6 +18,9 @@ DOCUMENTATION = """
 
 EXAMPLES = """
 """
+
+
+RECURSE_LEVEL_GROUP_TEMPLTE = "__yaml_folder__{}{}"
 
 
 class InventoryModule(BaseInventoryPlugin):
@@ -52,11 +57,14 @@ class InventoryModule(BaseInventoryPlugin):
         # Start recursion
         self._parse_inventory(inventory_folder)
 
-    def _parse_inventory(self, folder: Path, vars: dict = None, host_name_prefix: str = ""):
+    def _parse_inventory(self, folder: Path, vars: dict = None, prefixes: List[str] = None):
         """Recurse inventory folder and parse all group_vars, hosts etc."""
         # Default value for vars
         if vars is None:
             vars = {}
+        # Default for prefixes
+        if prefixes is None:
+            prefixes = []
 
         # Collect subfolders to recurse after parsing the rest
         sub_dirs = []
@@ -91,13 +99,15 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 # Filename is group name
                 group = path.name.replace(".yml", "")
+                recurse_level_group = RECURSE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
 
                 # Add group if not exist
                 self.inventory.add_group(group)
+                self.inventory.add_group(recurse_level_group)
 
                 # Set variables
                 for (varname, value) in obj.items():
-                    self.inventory.set_variable(group, varname, value)
+                    self.inventory.set_variable(recurse_level_group, varname, value)
 
         # Process hosts from host_obj
         if hosts_obj:
@@ -107,7 +117,7 @@ class InventoryModule(BaseInventoryPlugin):
                     host_vars = {}
 
                 # Build host_name
-                host_name = f"{host_name_prefix}{host_name_base}"
+                host_name = f"{prefixes[-1]}{host_name_base}"
 
                 # Combine host_vars with other vars collected
                 combined_vars = vars.copy()
@@ -116,6 +126,7 @@ class InventoryModule(BaseInventoryPlugin):
                 # Allow override of groups by defining the "groups" variable
                 groups = combined_vars.pop("groups", None) or [hosts_path.parent.name]
 
+                # Add host to specified group and set host variables
                 for group in groups:
                     # Add group if not exist
                     self.inventory.add_group(group)
@@ -127,6 +138,31 @@ class InventoryModule(BaseInventoryPlugin):
                     for (varname, value) in combined_vars.items():
                         self.inventory.set_variable(host_name, varname, value)
 
+                # Apply variables of specific group yml files to the recusive tree branch
+                # They might only exist when the explicit group_vars yml file was created for the branch
+                recurse_level_groups = [
+                    RECURSE_LEVEL_GROUP_TEMPLTE.format(recurse_level_prefix, group).replace("-", "_")
+                    for group in groups
+                    for recurse_level_prefix in prefixes
+                ]
+                for recurse_level_group in recurse_level_groups:
+                    try:
+                        self.inventory.add_host(host_name, recurse_level_group)
+                    except AnsibleError:
+                        pass
+
         # Recurse into folders
         for sub_dir in sub_dirs:
-            self._parse_inventory(sub_dir, vars, host_name_prefix + f"{sub_dir.name}-")
+            # On top level prefixes is empty
+            try:
+                last_prefix = prefixes[-1]
+            except IndexError:
+                last_prefix = ""
+            prefixes.append("{}{}-".format(last_prefix, sub_dir.name))
+            self._parse_inventory(sub_dir, vars, prefixes)
+
+        # Going up a recusion level on method return. Therefore also remove prefix of this level.
+        try:
+            prefixes.pop(-1)
+        except IndexError:  # On top level prefixes is empty
+            pass

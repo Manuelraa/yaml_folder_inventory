@@ -1,6 +1,20 @@
 # manuelraa.yaml_folder_inventory.yaml_folder
 Ansible inventory plugin for better inventory structure
 
+## Need help? Missing feature? Bug?
+Please drop me a message! Open a issue whatever you like. I will try my best to help you!
+
+## Usage
+```
+> ansible-galaxy collection install manuelraa.yaml_folder_inventory
+> cat ansible.cfg
+[defaults]
+inventory = ./inventory/yaml_folder.yml
+
+[inventory]
+enable_plugins = manuelraa.yaml_folder_inventory.yaml_folder
+```
+
 ## Inventory plugin overview
 ### Main folder
 Inventory folder root must contain a file called `yaml_folder.yml` it can be empty or contain whatever you want.

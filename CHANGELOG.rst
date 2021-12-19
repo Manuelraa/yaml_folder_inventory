@@ -5,6 +5,13 @@ manuelraa.yaml_folder_inventory Release Notes
 .. contents:: Topics
 
 
+v1.1.0
+======
+
+Major Changes
+-------------
+- Added recurse level groups to fix group vars applied to every branch in tree instead of only it's own branch (Issue #1)
+
 v1.0.1
 ======
 
