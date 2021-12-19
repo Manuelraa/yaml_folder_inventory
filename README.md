@@ -1,6 +1,9 @@
 # manuelraa.yaml_folder_inventory.yaml_folder
 Ansible inventory plugin for better inventory structure
 
+## Need help? Missing feature? Bug?
+Please drop me a message! Open a issue whatever you like. I will try my best to help you!
+
 ## Usage
 ```
 > ansible-galaxy collection install manuelraa.yaml_folder_inventory
