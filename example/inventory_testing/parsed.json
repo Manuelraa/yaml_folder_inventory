@@ -1,15 +1,3 @@
-ansible-inventory [core 2.11.4] 
-  config file = /home/user/source/yaml_folder_inventory/example/ansible.cfg
-  configured module search path = ['/home/user/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/user/.local/lib/python3.9/site-packages/ansible
-  ansible collection location = /home/user/.ansible/collections:/usr/share/ansible/collections
-  executable location = /home/user/.local/bin/ansible-inventory
-  python version = 3.9.6 (default, Nov  9 2021, 13:31:27) [GCC 8.5.0 20210514 (Red Hat 8.5.0-3)]
-  jinja version = 2.11.3
-  libyaml = True
-Using /home/user/source/yaml_folder_inventory/example/ansible.cfg as config file
-setting up inventory plugins
-Parsed /home/user/source/yaml_folder_inventory/example/inventory_testing/yaml_folder.yml inventory source with yaml_folder plugin
 {
     "__yaml_folder__internal_prod_nextcloud_nextcloud_apache": {
         "hosts": [
