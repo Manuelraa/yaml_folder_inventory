@@ -60,13 +60,13 @@ web1:
 
 This will be converted to:
 ```
-> ansible -i ./inventory --list-hosts
+> ansible -i ./inventory/yaml_folder.yml all --list-hosts
 - prod-app-app1
 - prod-web-web1
 - simu-app-app1
 - simu-web-web1
 
-> ansible -i ./inventory --list-hosts --limit 'simu-*'
+> ansible -i ./inventory/yaml_folder.yml all --list-hosts --limit 'simu-*'
 - simu-app-app1
 - simu-web-web1
 ```
