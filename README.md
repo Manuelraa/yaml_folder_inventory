@@ -73,7 +73,7 @@ This will be converted to:
 
 ### Special files
 #### **`vars.yml`**
-Variables applied recusive to all subelements
+Variables applied recusive down the tree branch
 ```yml
 var1: 1
 var2: test
