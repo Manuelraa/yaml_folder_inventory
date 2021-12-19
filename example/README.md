@@ -6,7 +6,7 @@ You could also use something like "{product}-{customer}-{environment}" or whatev
 ## Nextcloud
 ### Show all hosts
 ```
-[user@rocky-dever example]$ ansible-playbook playbooks/deploy_nextcloud.yml --list-hosts 
+[user@rocky-dever example]$ ansible-playbook playbooks/deploy_nextcloud.yml -i inventory_testing/yaml_folder.yml --list-hosts
 
 playbook: playbooks/deploy_nextcloud.yml
 
@@ -18,15 +18,16 @@ playbook: playbooks/deploy_nextcloud.yml
 
   play #2 (nextcloud_apache): Deploy nextcloud apache   TAGS: []
     pattern: ['nextcloud_apache']
-    hosts (2):
+    hosts (4):
       internal-prod-nextcloud-nextcloud_apache-apache1
+      internal-prod-nextcloud-instance1
       customer_one-prod-nextcloud-nextcloud_apache-apache1
-[user@rocky-dever example]$
+      top-level-host
 ```
 
 ### Limit to only one environment
 ```
-[user@rocky-dever example]$ ansible-playbook playbooks/deploy_nextcloud.yml --list-hosts --limit 'internal-prod-*'
+[user@rocky-dever example]$ ansible-playbook playbooks/deploy_nextcloud.yml -i inventory_testing/yaml_folder.yml --list-hosts --limit 'internal-prod-*'
 
 playbook: playbooks/deploy_nextcloud.yml
 
@@ -37,7 +38,8 @@ playbook: playbooks/deploy_nextcloud.yml
 
   play #2 (nextcloud_apache): Deploy nextcloud apache   TAGS: []
     pattern: ['nextcloud_apache']
-    hosts (1):
+    hosts (2):
+      internal-prod-nextcloud-instance1
       internal-prod-nextcloud-nextcloud_apache-apache1
 ```
 
