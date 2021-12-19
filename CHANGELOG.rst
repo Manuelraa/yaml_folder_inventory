@@ -6,7 +6,8 @@ manuelraa.yaml_folder_inventory Release Notes
 
 v1.2.0
 ======
-Even tho changes here are bugfixes they change the behaviro therefore bigger version bump
+Even tho changes here are bugfixes they change the behaviro therefore bigger version bump.
+In general lots of fixes to wrong variable precedence.
 
 Minor Changes
 -------------
