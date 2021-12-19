@@ -18,7 +18,7 @@ Minor Changes
 Bugfixes
 --------
 - Fix IndexError when defining group_vars yaml file on top level
-- Fix lower level group_vars do not override variables of levels above
+- Fix lower level group_vars do override variables of levels above
 - Fix vars.yml vars not cleaned when going back up in tree therefore also affecting diffrent tree branches
 
 v1.1.0
