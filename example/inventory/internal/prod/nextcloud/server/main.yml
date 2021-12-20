@@ -1,0 +1,2 @@
+server1:
+  ansible_host: server1.prod.internal.example.localhost

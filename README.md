@@ -1,7 +1,7 @@
 # manuelraa.yaml_folder_inventory.yaml_folder
 Ansible inventory plugin for better inventory structure.
 Recursive folder based yaml inventory.
-Allowing for a more complex YAML inventory by allowing splitting up group_vars and host_vars into a tree based contrsuct.
+Allowing for a more complex YAML inventory by allowing splitting up group_vars and host_vars into a tree based construct.
 
 ## Example
 Can be found [here](https://github.com/Manuelraa/yaml_folder_inventory/tree/master/example)
@@ -96,3 +96,6 @@ app2:
 
 #### Group yml files **`*.yml`**
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
+
+## Links
+Ansible Galaxy: https://galaxy.ansible.com/manuelraa/yaml_folder_inventory

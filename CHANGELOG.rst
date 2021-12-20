@@ -4,6 +4,15 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.2.1
+======
+
+Minor Changes
+-------------
+- Updated example in repo
+- Fix pylint errors
+- Split bigger methods into smaller methods
+
 v1.2.0
 ======
 Even tho changes here are bugfixes they change the behaviro therefore bigger version bump.

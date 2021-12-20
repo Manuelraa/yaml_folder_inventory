@@ -1,0 +1,9 @@
+backend_servers_dc1:
+  - cool-app1.simu.internal.example.localhost
+  - cool-app3.simu.internal.example.localhost
+
+backend_servers_dc2:
+  - cool-app2.simu.internal.example.localhost
+  - cool-app4.simu.internal.example.localhost
+
+backend_servers: "{{ backend_servers_dc1 + backend_servers_dc2 }}"

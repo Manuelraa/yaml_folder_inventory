@@ -1,0 +1,138 @@
+{
+    "__yaml_folder__external_haproxy": {
+        "hosts": [
+            "external-prod-haproxy-haproxy-db1",
+            "external-prod-haproxy-haproxy-db2"
+        ]
+    },
+    "__yaml_folder__internal_haproxy": {
+        "hosts": [
+            "internal-simu-haproxy-haproxy-db1",
+            "internal-simu-haproxy-haproxy-db2"
+        ]
+    },
+    "_meta": {
+        "hostvars": {
+            "external-prod-haproxy-haproxy-db1": {
+                "ansible_host": "haproxy1.prod.external.example.localhost",
+                "backend_servers": "{{ backend_servers_dc1 + backend_servers_dc2 }}",
+                "backend_servers_dc1": [
+                    "cool-app1.prod.external.example.localhost",
+                    "cool-app3.prod.external.example.localhost"
+                ],
+                "backend_servers_dc2": [
+                    "cool-app2.prod.external.example.localhost",
+                    "cool-app4.prod.external.example.localhost"
+                ],
+                "env": "prod",
+                "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml",
+                "product": "external"
+            },
+            "external-prod-haproxy-haproxy-db2": {
+                "ansible_host": "haproxy2.prod.external.example.localhost",
+                "backend_servers": "{{ backend_servers_dc2 + backend_servers_dc1 }}",
+                "backend_servers_dc1": [
+                    "cool-app1.prod.external.example.localhost",
+                    "cool-app3.prod.external.example.localhost"
+                ],
+                "backend_servers_dc2": [
+                    "cool-app2.prod.external.example.localhost",
+                    "cool-app4.prod.external.example.localhost"
+                ],
+                "env": "prod",
+                "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml",
+                "product": "external"
+            },
+            "external-prod-nextcloud-apache-web1": {
+                "ansible_host": "web1.prod.external.example.localhost",
+                "env": "prod",
+                "product": "external"
+            },
+            "external-prod-nextcloud-server-server1": {
+                "ansible_host": "server1.prod.external.example.localhost",
+                "env": "prod",
+                "product": "external"
+            },
+            "internal-prod-nextcloud-apache-web1": {
+                "ansible_host": "web1.prod.internal.example.localhost",
+                "env": "prod",
+                "product": "internal"
+            },
+            "internal-prod-nextcloud-server-server1": {
+                "ansible_host": "server1.prod.internal.example.localhost",
+                "env": "prod",
+                "product": "internal"
+            },
+            "internal-simu-haproxy-haproxy-db1": {
+                "ansible_host": "haproxy1.simu.internal.example.localhost",
+                "backend_servers": "{{ backend_servers_dc1 + backend_servers_dc2 }}",
+                "backend_servers_dc1": [
+                    "cool-app1.simu.internal.example.localhost",
+                    "cool-app3.simu.internal.example.localhost"
+                ],
+                "backend_servers_dc2": [
+                    "cool-app2.simu.internal.example.localhost",
+                    "cool-app4.simu.internal.example.localhost"
+                ],
+                "env": "simu",
+                "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml",
+                "product": "internal"
+            },
+            "internal-simu-haproxy-haproxy-db2": {
+                "ansible_host": "haproxy2.simu.internal.example.localhost",
+                "backend_servers": "{{ backend_servers_dc2 + backend_servers_dc1 }}",
+                "backend_servers_dc1": [
+                    "cool-app1.simu.internal.example.localhost",
+                    "cool-app3.simu.internal.example.localhost"
+                ],
+                "backend_servers_dc2": [
+                    "cool-app2.simu.internal.example.localhost",
+                    "cool-app4.simu.internal.example.localhost"
+                ],
+                "env": "simu",
+                "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml",
+                "product": "internal"
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "__yaml_folder__external_haproxy",
+            "__yaml_folder__haproxy",
+            "__yaml_folder__internal_haproxy",
+            "apache",
+            "haproxy",
+            "nextcloud",
+            "server",
+            "ungrouped"
+        ]
+    },
+    "apache": {
+        "hosts": [
+            "external-prod-nextcloud-apache-web1",
+            "internal-prod-nextcloud-apache-web1"
+        ]
+    },
+    "haproxy": {
+        "hosts": [
+            "external-prod-haproxy-haproxy-db1",
+            "external-prod-haproxy-haproxy-db2",
+            "internal-simu-haproxy-haproxy-db1",
+            "internal-simu-haproxy-haproxy-db2"
+        ]
+    },
+    "nextcloud": {
+        "hosts": [
+            "external-prod-nextcloud-apache-web1",
+            "external-prod-nextcloud-server-server1",
+            "internal-prod-nextcloud-apache-web1",
+            "internal-prod-nextcloud-server-server1"
+        ]
+    },
+    "server": {
+        "hosts": [
+            "external-prod-nextcloud-server-server1",
+            "internal-prod-nextcloud-server-server1"
+        ]
+    }
+}
