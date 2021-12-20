@@ -4,6 +4,13 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v?.?.?
+======
+
+Minor Changes
+-------------
+- Updated example in repo
+
 v1.2.0
 ======
 Even tho changes here are bugfixes they change the behaviro therefore bigger version bump.
