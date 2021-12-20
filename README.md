@@ -96,3 +96,6 @@ app2:
 
 #### Group yml files **`*.yml`**
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
+
+## Links
+Ansible Galaxy: https://galaxy.ansible.com/manuelraa/yaml_folder_inventory
