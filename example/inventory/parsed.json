@@ -1,4 +1,16 @@
 {
+    "__yaml_folder__external_haproxy": {
+        "hosts": [
+            "external-prod-haproxy-haproxy-db1",
+            "external-prod-haproxy-haproxy-db2"
+        ]
+    },
+    "__yaml_folder__internal_haproxy": {
+        "hosts": [
+            "internal-simu-haproxy-haproxy-db1",
+            "internal-simu-haproxy-haproxy-db2"
+        ]
+    },
     "_meta": {
         "hostvars": {
             "external-prod-haproxy-haproxy-db1": {
@@ -13,6 +25,7 @@
                     "cool-app4.prod.external.example.localhost"
                 ],
                 "env": "prod",
+                "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml",
                 "product": "external"
             },
             "external-prod-haproxy-haproxy-db2": {
@@ -27,6 +40,7 @@
                     "cool-app4.prod.external.example.localhost"
                 ],
                 "env": "prod",
+                "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml",
                 "product": "external"
             },
             "external-prod-nextcloud-apache-web1": {
@@ -61,6 +75,7 @@
                     "cool-app4.simu.internal.example.localhost"
                 ],
                 "env": "simu",
+                "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml",
                 "product": "internal"
             },
             "internal-simu-haproxy-haproxy-db2": {
@@ -75,12 +90,16 @@
                     "cool-app4.simu.internal.example.localhost"
                 ],
                 "env": "simu",
+                "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml",
                 "product": "internal"
             }
         }
     },
     "all": {
         "children": [
+            "__yaml_folder__external_haproxy",
+            "__yaml_folder__haproxy",
+            "__yaml_folder__internal_haproxy",
             "apache",
             "haproxy",
             "nextcloud",

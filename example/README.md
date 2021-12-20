@@ -98,9 +98,37 @@ ok: [external-prod-haproxy-haproxy-db2] => {
     ]
 }
 
+TASK [Print global haproxy group var] *******************************************************************************************************************************************************
+ok: [internal-simu-haproxy-haproxy-db1] => {
+    "haproxy_global_variable": "VARIABLE IS NOT DEFINED!"
+}
+ok: [internal-simu-haproxy-haproxy-db2] => {
+    "haproxy_global_variable": "VARIABLE IS NOT DEFINED!"
+}
+ok: [external-prod-haproxy-haproxy-db1] => {
+    "haproxy_global_variable": "VARIABLE IS NOT DEFINED!"
+}
+ok: [external-prod-haproxy-haproxy-db2] => {
+    "haproxy_global_variable": "VARIABLE IS NOT DEFINED!"
+}
+
+TASK [Print haproxy group var which is defined in each customer folder] *********************************************************************************************************************
+ok: [internal-simu-haproxy-haproxy-db1] => {
+    "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml"
+}
+ok: [internal-simu-haproxy-haproxy-db2] => {
+    "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml"
+}
+ok: [external-prod-haproxy-haproxy-db1] => {
+    "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml"
+}
+ok: [external-prod-haproxy-haproxy-db2] => {
+    "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml"
+}
+
 PLAY RECAP **********************************************************************************************************************************************************************************
-external-prod-haproxy-haproxy-db1 : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-external-prod-haproxy-haproxy-db2 : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-internal-simu-haproxy-haproxy-db1 : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-internal-simu-haproxy-haproxy-db2 : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+external-prod-haproxy-haproxy-db1 : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+external-prod-haproxy-haproxy-db2 : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+internal-simu-haproxy-haproxy-db1 : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+internal-simu-haproxy-haproxy-db2 : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```

@@ -5,3 +5,11 @@
     - name: Print backend_servers
       debug:
         var: backend_servers
+
+    - name: Print global haproxy group var
+      debug:
+        var: haproxy_global_variable
+
+    - name: Print haproxy group var which is defined in each customer folder
+      debug:
+        var: haproxy_customer_variable
