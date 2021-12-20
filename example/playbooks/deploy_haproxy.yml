@@ -1,0 +1,7 @@
+- name: Deploy haproxy servers
+  hosts: haproxy
+  gather_facts: false
+  tasks:
+    - name: Print backend_servers
+      debug:
+        var: backend_servers
