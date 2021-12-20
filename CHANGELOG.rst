@@ -10,6 +10,8 @@ v?.?.?
 Minor Changes
 -------------
 - Updated example in repo
+- Fix pylint errors
+- Split bigger methods into smaller methods
 
 v1.2.0
 ======
