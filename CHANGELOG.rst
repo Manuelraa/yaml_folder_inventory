@@ -4,7 +4,7 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
-v?.?.?
+v1.2.1
 ======
 
 Minor Changes
