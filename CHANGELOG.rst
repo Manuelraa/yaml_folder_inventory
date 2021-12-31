@@ -4,6 +4,13 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.3.1
+========
+
+Breaking Changes
+----------------
+- Rename option :code:`EXCLUDE_LAST_GROUP_IN_NAME` to :code:`exclude_last_group_in_name` 
+
 v1.3.0
 ========
 

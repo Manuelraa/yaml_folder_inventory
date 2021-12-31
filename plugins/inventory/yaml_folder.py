@@ -15,14 +15,30 @@ from ansible.utils.display import Display
 
 
 DOCUMENTATION = """
-    name: yaml_folder
+    module: yaml_folder
     plugin_type: inventory
+    short_description: YAML folder inventory
+    description:
+      - Recursivly parsed a tree based folder structure and processes it into a single inventory
+    options:
+      plugin:
+        description: Token that ensures this is a source file for the plugin.
+        required: True
+        type: string
+        choices: ['yaml_folder', 'manuelraa.yaml_folder_inventory.yaml_folder']
+      exclude_last_group_in_name:
+        description: Changes behaviour if last group name is added to instance names or not
+        required: False
+        default: False
+        type: bool
+        version_added: 1.3.1
     author:
         - Manuel Rapp (@manuelraa)
 """
 
 
 EXAMPLES = """
+# Example can be found in the github repo: https://github.com/Manuelraa/yaml_folder_inventory/tree/master/example
 """
 
 
@@ -96,11 +112,11 @@ class InventoryModule(BaseInventoryPlugin):
         # Parse yaml
         config = self.loader.load_from_file(str(yaml_folder_file), unsafe=True)
         # Override config if set
-        if "EXCLUDE_LAST_GROUP_IN_NAME" in config:
-            value = config["EXCLUDE_LAST_GROUP_IN_NAME"]
+        if "exclude_last_group_in_name" in config:
+            value = config["exclude_last_group_in_name"]
             if not isinstance(value, bool):
-                raise ValueError("Config value type for 'EXCLUDE_LAST_GROUP_IN_NAME' should be 'bool'")
-            self.exclude_last_group_in_name = config["EXCLUDE_LAST_GROUP_IN_NAME"]
+                raise ValueError("Config value type for 'exclude_last_group_in_name' should be 'bool'")
+            self.exclude_last_group_in_name = value
 
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
         inventory_folder = yaml_folder_file.parent
@@ -151,7 +167,7 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.set_variable(tree_level_group, varname, value)
 
     def _parse_hosts(
-        self, hosts_obj: Union[dict,str], hosts_path: Path, global_vars: dict, prefixes: List[str]
+        self, hosts_obj: Union[dict, str], hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
         DISPLAY.vvv(f"Parsing hosts: {hosts_path}")
@@ -162,7 +178,6 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 host_name_base = host_obj
                 host_vars = hosts_obj[host_obj]
-
 
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
