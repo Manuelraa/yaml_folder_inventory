@@ -4,6 +4,13 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.2.2
+======
+
+Bugfixes
+--------
+- Fix #28 recursive variable collection not working correctly
+
 v1.2.1
 ======
 
