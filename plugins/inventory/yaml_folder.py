@@ -65,7 +65,7 @@ class InventoryModule(BaseInventoryPlugin):
         """Search for lowest level tree_level_group and return it."""
         possible_higher_level_groups = [
             to_safe_group_name(TREE_LEVEL_GROUP_TEMPLTE.format(prefix, group).replace("-", "_"))
-            for prefix in prefixes
+            for prefix in prefixes[:-1]  # Exclude current level from prefixes
         ]
         # Search bottum to up
         for possible_higher_level_group in reversed(possible_higher_level_groups):
