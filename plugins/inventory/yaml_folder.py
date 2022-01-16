@@ -1,5 +1,4 @@
 """yaml_folder ansible inventory plugin."""
-from logging import log
 from pathlib import Path
 from typing import List
 
@@ -96,7 +95,7 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _parse_group_vars(self, obj: dict, path: Path, prefixes: List[str]) -> None:
         """Parse group vars file. aka group_name.yml (haproxy.yml)"""
-        DISPLAY.vvv("Parsing group variables {}".format(path))
+        DISPLAY.vvv("Parsing group variables: {}".format(path))
 
         # Filename is group name
         group = path.name.replace(".yml", "")
@@ -128,6 +127,7 @@ class InventoryModule(BaseInventoryPlugin):
         self, hosts_obj: dict, hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
+        DISPLAY.vvv("Parsing hosts: {}".format(hosts_path))
         for (host_name_base, host_vars) in hosts_obj.items():
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
@@ -185,13 +185,12 @@ class InventoryModule(BaseInventoryPlugin):
             # Skip "yaml_folder.yml" file
             if path.name == "yaml_folder.yml":
                 continue
-            # Skip file not ending with ".yml"
-            if (not path.is_dir()) and (not path.name.endswith(".yml")):
-                continue
-
             # Recurse dirs after processing all files
-            if path.is_dir():
+            elif path.is_dir():
                 sub_dirs.append(path)
+                continue
+            # Skip file not ending with ".yml"; Check must be after is_dir() check
+            elif not path.name.endswith(".yml"):
                 continue
 
             # Parse yaml
@@ -214,6 +213,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Recurse into folders
         for sub_dir in sub_dirs:
+            DISPLAY.vvv("Recurse into folder: {}".format(sub_dir))
             prefixes.append(PREFIX_TEMPLATE.format(prefixes[-1], sub_dir.name))
             self._parse_inventory(sub_dir, global_vars, prefixes)
 
