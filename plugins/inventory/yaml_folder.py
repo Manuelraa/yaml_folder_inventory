@@ -76,7 +76,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
         inventory_folder = Path(path).parent
-        DISPLAY.v("YAML Inventory: {inventory_folder}")
+        DISPLAY.v(f"YAML Inventory: {inventory_folder}")
         # Start recursion
         self._parse_inventory(inventory_folder)
 
@@ -97,14 +97,14 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _parse_group_vars(self, obj: dict, path: Path, prefixes: List[str]) -> None:
         """Parse group vars file. aka group_name.yml (haproxy.yml)"""
-        DISPLAY.vvv("Parsing group variables: {path}")
+        DISPLAY.vvv(f"Parsing group variables: {path}")
 
         # Filename is group name
         group = path.name.replace(".yml", "")
         tree_level_group = to_safe_group_name(
             TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
         )
-        DISPLAY.vvv("Group name / Tree level group name: {group} / {tree_level_group}")
+        DISPLAY.vvv(f"Group name / Tree level group name: {group} / {tree_level_group}")
 
         # Add group if not exist
         self.inventory.add_group(group)
@@ -129,7 +129,7 @@ class InventoryModule(BaseInventoryPlugin):
         self, hosts_obj: dict, hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
-        DISPLAY.vvv("Parsing hosts: {hosts_path}")
+        DISPLAY.vvv(f"Parsing hosts: {hosts_path}")
         for (host_name_base, host_vars) in hosts_obj.items():
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
@@ -215,7 +215,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Recurse into folders
         for sub_dir in sub_dirs:
-            DISPLAY.vvv("Recurse into folder: {sub_dir}")
+            DISPLAY.vvv(f"Recurse into folder: {sub_dir}")
             prefixes.append(PREFIX_TEMPLATE.format(prefixes[-1], sub_dir.name))
             self._parse_inventory(sub_dir, global_vars, prefixes)
 
