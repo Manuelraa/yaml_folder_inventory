@@ -26,6 +26,7 @@
                 ],
                 "env": "prod",
                 "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml",
+                "haproxy_global_variable": "Hi! I'm a test variable defined in inventory/haproxy.yml",
                 "product": "external"
             },
             "external-prod-haproxy-haproxy-db2": {
@@ -41,6 +42,7 @@
                 ],
                 "env": "prod",
                 "haproxy_customer_variable": "Variable set in inventory/external/haproxy.yml",
+                "haproxy_global_variable": "Hi! I'm a test variable defined in inventory/haproxy.yml",
                 "product": "external"
             },
             "external-prod-nextcloud-apache-web1": {
@@ -76,6 +78,7 @@
                 ],
                 "env": "simu",
                 "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml",
+                "haproxy_global_variable": "Hi! I'm a test variable defined in inventory/haproxy.yml",
                 "product": "internal"
             },
             "internal-simu-haproxy-haproxy-db2": {
@@ -91,6 +94,7 @@
                 ],
                 "env": "simu",
                 "haproxy_customer_variable": "Variable set in inventory/internal/haproxy.yml",
+                "haproxy_global_variable": "Hi! I'm a test variable defined in inventory/haproxy.yml",
                 "product": "internal"
             }
         }
