@@ -35,9 +35,11 @@ class YamlFolderDisplay(Display):
     def __init__(self):
         super().__init__(verbosity=display.verbosity)
 
-    def display(self, msg, color=None, stderr=False, screen_only=False, log_only=False, newline=True):
-        msg = u"[yaml_folder] {}".format(msg)
-        super().display(msg, color, stderr, screen_only, log_only, newline)
+    # pylint: disable=too-many-arguments
+    def display(
+        self, msg, color=None, stderr=False, screen_only=False, log_only=False, newline=True
+    ):
+        super().display(f"[yaml_folder] {msg}", color, stderr, screen_only, log_only, newline)
 
 
 DISPLAY = YamlFolderDisplay()
@@ -74,7 +76,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
         inventory_folder = Path(path).parent
-        DISPLAY.v("YAML Inventory: {}".format(inventory_folder))
+        DISPLAY.v("YAML Inventory: {inventory_folder}")
         # Start recursion
         self._parse_inventory(inventory_folder)
 
@@ -95,14 +97,14 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _parse_group_vars(self, obj: dict, path: Path, prefixes: List[str]) -> None:
         """Parse group vars file. aka group_name.yml (haproxy.yml)"""
-        DISPLAY.vvv("Parsing group variables: {}".format(path))
+        DISPLAY.vvv("Parsing group variables: {path}")
 
         # Filename is group name
         group = path.name.replace(".yml", "")
         tree_level_group = to_safe_group_name(
             TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
         )
-        DISPLAY.vvv("Group name / Tree level group name: {} / {}".format(group, tree_level_group))
+        DISPLAY.vvv("Group name / Tree level group name: {group} / {tree_level_group}")
 
         # Add group if not exist
         self.inventory.add_group(group)
@@ -127,7 +129,7 @@ class InventoryModule(BaseInventoryPlugin):
         self, hosts_obj: dict, hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
-        DISPLAY.vvv("Parsing hosts: {}".format(hosts_path))
+        DISPLAY.vvv("Parsing hosts: {hosts_path}")
         for (host_name_base, host_vars) in hosts_obj.items():
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
@@ -186,11 +188,11 @@ class InventoryModule(BaseInventoryPlugin):
             if path.name == "yaml_folder.yml":
                 continue
             # Recurse dirs after processing all files
-            elif path.is_dir():
+            if path.is_dir():
                 sub_dirs.append(path)
                 continue
             # Skip file not ending with ".yml"; Check must be after is_dir() check
-            elif not path.name.endswith(".yml"):
+            if not path.name.endswith(".yml"):
                 continue
 
             # Parse yaml
@@ -213,7 +215,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Recurse into folders
         for sub_dir in sub_dirs:
-            DISPLAY.vvv("Recurse into folder: {}".format(sub_dir))
+            DISPLAY.vvv("Recurse into folder: {sub_dir}")
             prefixes.append(PREFIX_TEMPLATE.format(prefixes[-1], sub_dir.name))
             self._parse_inventory(sub_dir, global_vars, prefixes)
 
