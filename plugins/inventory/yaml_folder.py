@@ -89,8 +89,7 @@ class InventoryModule(BaseInventoryPlugin):
         # Search bottum to up
         for possible_higher_level_group in reversed(possible_higher_level_groups):
             try:
-                higher_level_group = self.inventory.groups[possible_higher_level_group]
-                return higher_level_group
+                return self.inventory.groups[possible_higher_level_group]
             except KeyError:
                 pass
         return None
