@@ -1,4 +1,5 @@
 """yaml_folder ansible inventory plugin."""
+from dis import dis
 from pathlib import Path
 from typing import List
 
@@ -6,6 +7,7 @@ from ansible.cli import display
 from ansible.inventory.data import InventoryData
 from ansible.inventory.group import Group
 from ansible.parsing.dataloader import DataLoader
+from ansible.parsing.yaml.objects import AnsibleSequence
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.utils.display import Display
 
@@ -37,6 +39,19 @@ class YamlFolderDisplay(Display):
         self, msg, color=None, stderr=False, screen_only=False, log_only=False, newline=True
     ):
         super().display(f"[yaml_folder] {msg}", color, stderr, screen_only, log_only, newline)
+
+    def wrong_type(self, template, obj, path):
+        """Function used to display wrong type messages during validation.
+
+        Takes care of converting special ansible types
+        to normal names like 'list' everyone understands.
+        """
+        if isinstance(obj, AnsibleSequence):
+            obj_type = list
+        else:
+            obj_type = type(obj)
+        msg = template.format(obj_type, path)
+        raise ValueError(msg)
 
 
 DISPLAY = YamlFolderDisplay()
@@ -197,6 +212,12 @@ class InventoryModule(BaseInventoryPlugin):
                 global_vars.update(obj)
             # Add instances
             elif path.name == "main.yml":
+                if not isinstance(obj, dict):
+                    DISPLAY.wrong_type(
+                        "[ERROR] Expected file content to be a dict/object. Got {}. File: {}",
+                        obj,
+                        path,
+                    )
                 hosts_obj = obj
                 hosts_path = path
             # Group vars
