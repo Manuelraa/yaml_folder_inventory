@@ -2,6 +2,7 @@
 from pathlib import Path
 from typing import List
 
+from ansible.cli import display
 from ansible.inventory.data import InventoryData
 from ansible.inventory.group import (
     Group,
@@ -9,6 +10,7 @@ from ansible.inventory.group import (
 )
 from ansible.parsing.dataloader import DataLoader
 from ansible.plugins.inventory import BaseInventoryPlugin
+from ansible.utils.display import Display
 
 
 DOCUMENTATION = """
@@ -25,6 +27,22 @@ EXAMPLES = """
 
 TREE_LEVEL_GROUP_TEMPLTE = "__yaml_folder__{}{}"
 PREFIX_TEMPLATE = "{}{}-"
+
+
+class YamlFolderDisplay(Display):
+    """Subclass to always add prefix."""
+
+    def __init__(self):
+        super().__init__(verbosity=display.verbosity)
+
+    # pylint: disable=too-many-arguments
+    def display(
+        self, msg, color=None, stderr=False, screen_only=False, log_only=False, newline=True
+    ):
+        super().display(f"[yaml_folder] {msg}", color, stderr, screen_only, log_only, newline)
+
+
+DISPLAY = YamlFolderDisplay()
 
 
 class InventoryModule(BaseInventoryPlugin):
@@ -58,6 +76,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
         inventory_folder = Path(path).parent
+        DISPLAY.v(f"YAML Inventory: {inventory_folder}")
         # Start recursion
         self._parse_inventory(inventory_folder)
 
@@ -65,7 +84,7 @@ class InventoryModule(BaseInventoryPlugin):
         """Search for lowest level tree_level_group and return it."""
         possible_higher_level_groups = [
             to_safe_group_name(TREE_LEVEL_GROUP_TEMPLTE.format(prefix, group).replace("-", "_"))
-            for prefix in prefixes
+            for prefix in prefixes[:-1]  # Exclude current level from prefixes
         ]
         # Search bottum to up
         for possible_higher_level_group in reversed(possible_higher_level_groups):
@@ -77,11 +96,14 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _parse_group_vars(self, obj: dict, path: Path, prefixes: List[str]) -> None:
         """Parse group vars file. aka group_name.yml (haproxy.yml)"""
+        DISPLAY.vvv(f"Parsing group variables: {path}")
+
         # Filename is group name
         group = path.name.replace(".yml", "")
         tree_level_group = to_safe_group_name(
             TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
         )
+        DISPLAY.vvv(f"Group name / Tree level group name: {group} / {tree_level_group}")
 
         # Add group if not exist
         self.inventory.add_group(group)
@@ -106,6 +128,7 @@ class InventoryModule(BaseInventoryPlugin):
         self, hosts_obj: dict, hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
+        DISPLAY.vvv(f"Parsing hosts: {hosts_path}")
         for (host_name_base, host_vars) in hosts_obj.items():
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
@@ -163,13 +186,12 @@ class InventoryModule(BaseInventoryPlugin):
             # Skip "yaml_folder.yml" file
             if path.name == "yaml_folder.yml":
                 continue
-            # Skip file not ending with ".yml"
-            if (not path.is_dir()) and (not path.name.endswith(".yml")):
-                continue
-
             # Recurse dirs after processing all files
             if path.is_dir():
                 sub_dirs.append(path)
+                continue
+            # Skip file not ending with ".yml"; Check must be after is_dir() check
+            if not path.name.endswith(".yml"):
                 continue
 
             # Parse yaml
@@ -192,6 +214,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Recurse into folders
         for sub_dir in sub_dirs:
+            DISPLAY.vvv(f"Recurse into folder: {sub_dir}")
             prefixes.append(PREFIX_TEMPLATE.format(prefixes[-1], sub_dir.name))
             self._parse_inventory(sub_dir, global_vars, prefixes)
 
