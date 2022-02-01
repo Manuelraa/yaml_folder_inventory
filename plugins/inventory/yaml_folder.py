@@ -1,5 +1,4 @@
 """yaml_folder ansible inventory plugin."""
-from dis import dis
 from pathlib import Path
 from typing import List
 
@@ -28,6 +27,20 @@ TREE_LEVEL_GROUP_TEMPLTE = "__yaml_folder__{}{}"
 PREFIX_TEMPLATE = "{}{}-"
 
 
+def raise_wrong_type(template, obj, path):
+    """Function used to display wrong type messages during validation.
+
+    Takes care of converting special ansible types
+    to normal names like 'list' everyone understands.
+    """
+    if isinstance(obj, AnsibleSequence):
+        obj_type = list
+    else:
+        obj_type = type(obj)
+    msg = template.format(obj_type, path)
+    raise ValueError(msg)
+
+
 class YamlFolderDisplay(Display):
     """Subclass to always add prefix."""
 
@@ -39,19 +52,6 @@ class YamlFolderDisplay(Display):
         self, msg, color=None, stderr=False, screen_only=False, log_only=False, newline=True
     ):
         super().display(f"[yaml_folder] {msg}", color, stderr, screen_only, log_only, newline)
-
-    def wrong_type(self, template, obj, path):
-        """Function used to display wrong type messages during validation.
-
-        Takes care of converting special ansible types
-        to normal names like 'list' everyone understands.
-        """
-        if isinstance(obj, AnsibleSequence):
-            obj_type = list
-        else:
-            obj_type = type(obj)
-        msg = template.format(obj_type, path)
-        raise ValueError(msg)
 
 
 DISPLAY = YamlFolderDisplay()
@@ -171,6 +171,7 @@ class InventoryModule(BaseInventoryPlugin):
                 for (varname, value) in combined_vars.items():
                     self.inventory.set_variable(host_name, varname, value)
 
+    # pylint: disable=too-many-branches
     def _parse_inventory(self, folder: Path, global_vars: dict = None, prefixes: List[str] = None):
         """Recurse inventory folder and parse all group_vars, hosts etc."""
         # Default value for vars
