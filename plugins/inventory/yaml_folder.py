@@ -4,10 +4,7 @@ from typing import List
 
 from ansible.cli import display
 from ansible.inventory.data import InventoryData
-from ansible.inventory.group import (
-    Group,
-    to_safe_group_name,
-)
+from ansible.inventory.group import Group
 from ansible.parsing.dataloader import DataLoader
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.utils.display import Display
@@ -83,7 +80,7 @@ class InventoryModule(BaseInventoryPlugin):
     def _search_tree_level_group(self, prefixes: List[str], group: str) -> Group:
         """Search for lowest level tree_level_group and return it."""
         possible_higher_level_groups = [
-            to_safe_group_name(TREE_LEVEL_GROUP_TEMPLTE.format(prefix, group).replace("-", "_"))
+            TREE_LEVEL_GROUP_TEMPLTE.format(prefix, group).replace("-", "_")
             for prefix in prefixes[:-1]  # Exclude current level from prefixes
         ]
         # Search bottum to up
@@ -100,9 +97,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Filename is group name
         group = path.name.replace(".yml", "")
-        tree_level_group = to_safe_group_name(
-            TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
-        )
+        tree_level_group = TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
         DISPLAY.vvv(f"Group name / Tree level group name: {group} / {tree_level_group}")
 
         # Add group if not exist
