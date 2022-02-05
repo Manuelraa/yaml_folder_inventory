@@ -16,8 +16,6 @@ echo "Python: $python_version / Ansible: $ansible_version"
 
 for folder in $(find -maxdepth 1 -type d -not -name '.'); do
     echo "Testing: $folder"
-    # 'ungrouped' key was added in 2.8
-    # Its always empty for our tests so just remove it
     ansible-inventory --list -i "$folder/inventory/yaml_folder.yml" | jq --sort-keys '.' > "$result_file"
     echo "Diff < expected -- result >"
     diff <(jq --sort-keys '.' "$folder/$expected_file") "$result_file"
