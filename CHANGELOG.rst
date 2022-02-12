@@ -4,6 +4,18 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.2.3
+======
+
+Major Changes
+-------------
+- Improved Ansible downwards compatibility by removing import which first worked with Ansible 2.8
+- Added e2e tests to the repo
+
+Minor Changes
+-------------
+- Added logging
+
 v1.2.2
 ======
 

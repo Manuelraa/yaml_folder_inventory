@@ -5,6 +5,7 @@
             "external-prod-haproxy-haproxy-db2"
         ]
     },
+    "__yaml_folder__haproxy": {},
     "__yaml_folder__internal_haproxy": {
         "hosts": [
             "internal-simu-haproxy-haproxy-db1",
@@ -138,5 +139,6 @@
             "external-prod-nextcloud-server-server1",
             "internal-prod-nextcloud-server-server1"
         ]
-    }
+    },
+    "ungrouped": {}
 }
