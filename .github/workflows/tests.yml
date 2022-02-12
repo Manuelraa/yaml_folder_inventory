@@ -29,4 +29,4 @@ jobs:
         python3.10 -m pip install --upgrade setuptools wheel tox
     - name: Run tests on all python versions with tox
       run: |
-        python3.10 -m tox --parallel auto
+        python3.10 -m tox
