@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# Print newline for better test seperation
+echo ""
+
 # Random result file for parallel runs
 result_file="result-$RANDOM.json"
 
