@@ -1,6 +1,10 @@
 namespace: manuelraa
 name: yaml_folder_inventory
+<<<<<<< HEAD
 version: 1.2.3
+=======
+version: 1.2.2
+>>>>>>> origin/master
 readme: README.md
 authors:
   - Manuel Rapp (https://github.com/Manuelraa)
