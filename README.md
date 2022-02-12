@@ -97,5 +97,11 @@ app2:
 #### Group yml files **`*.yml`**
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
 
+## Run tests
+To run tests for all python versions just use `tox`
+```
+tox --parallel auto
+```
+
 ## Links
 Ansible Galaxy: https://galaxy.ansible.com/manuelraa/yaml_folder_inventory

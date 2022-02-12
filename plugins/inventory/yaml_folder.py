@@ -4,11 +4,9 @@ from typing import List
 
 from ansible.cli import display
 from ansible.inventory.data import InventoryData
-from ansible.inventory.group import (
-    Group,
-    to_safe_group_name,
-)
+from ansible.inventory.group import Group
 from ansible.parsing.dataloader import DataLoader
+from ansible.parsing.yaml.objects import AnsibleSequence
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.utils.display import Display
 
@@ -27,6 +25,20 @@ EXAMPLES = """
 
 TREE_LEVEL_GROUP_TEMPLTE = "__yaml_folder__{}{}"
 PREFIX_TEMPLATE = "{}{}-"
+
+
+def raise_wrong_type(template, obj, path):
+    """Function used to display wrong type messages during validation.
+
+    Takes care of converting special ansible types
+    to normal names like 'list' everyone understands.
+    """
+    if isinstance(obj, AnsibleSequence):
+        obj_type = list
+    else:
+        obj_type = type(obj)
+    msg = template.format(obj_type, path)
+    raise ValueError(msg)
 
 
 class YamlFolderDisplay(Display):
@@ -83,7 +95,7 @@ class InventoryModule(BaseInventoryPlugin):
     def _search_tree_level_group(self, prefixes: List[str], group: str) -> Group:
         """Search for lowest level tree_level_group and return it."""
         possible_higher_level_groups = [
-            to_safe_group_name(TREE_LEVEL_GROUP_TEMPLTE.format(prefix, group).replace("-", "_"))
+            TREE_LEVEL_GROUP_TEMPLTE.format(prefix, group).replace("-", "_")
             for prefix in prefixes[:-1]  # Exclude current level from prefixes
         ]
         # Search bottum to up
@@ -100,9 +112,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Filename is group name
         group = path.name.replace(".yml", "")
-        tree_level_group = to_safe_group_name(
-            TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
-        )
+        tree_level_group = TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
         DISPLAY.vvv(f"Group name / Tree level group name: {group} / {tree_level_group}")
 
         # Add group if not exist
@@ -161,6 +171,7 @@ class InventoryModule(BaseInventoryPlugin):
                 for (varname, value) in combined_vars.items():
                     self.inventory.set_variable(host_name, varname, value)
 
+    # pylint: disable=too-many-branches
     def _parse_inventory(self, folder: Path, global_vars: dict = None, prefixes: List[str] = None):
         """Recurse inventory folder and parse all group_vars, hosts etc."""
         # Default value for vars
@@ -202,6 +213,12 @@ class InventoryModule(BaseInventoryPlugin):
                 global_vars.update(obj)
             # Add instances
             elif path.name == "main.yml":
+                if not isinstance(obj, dict):
+                    DISPLAY.wrong_type(
+                        "[ERROR] Expected file content to be a dict/object. Got {}. File: {}",
+                        obj,
+                        path,
+                    )
                 hosts_obj = obj
                 hosts_path = path
             # Group vars
