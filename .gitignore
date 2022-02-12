@@ -2,10 +2,10 @@
 *.tar.gz
 
 # VS Code
-.vscode
+.vscode/
 
 # Python
-__pycache__
+venv/
+.tox/
+__pycache__/
 *.pyc
-venv
-.tox
