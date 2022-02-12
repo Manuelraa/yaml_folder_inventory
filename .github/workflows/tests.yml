@@ -25,8 +25,8 @@ jobs:
         python-version: "3.7"
     - name: Install dependencies
       run: |
-        python10 -m pip install --upgrade pip
-        python10 -m pip install --upgrade setuptools wheel tox
+        python3.10 -m pip install --upgrade pip
+        python3.10 -m pip install --upgrade setuptools wheel tox
     - name: Run tests on all python versions with tox
       run: |
-        python10 -m tox --parallel auto
+        python3.10 -m tox --parallel auto
