@@ -4,6 +4,10 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.2.3.1
+========
+- Ansible Galaxy import of 1.2.3 failed and I'm not able to upload same version again. So I have to change the version number.
+
 v1.2.3
 ======
 
