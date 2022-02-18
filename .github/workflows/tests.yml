@@ -7,6 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ./.tox/
+        key: ${{ runner.os }}-tox-${{ hashFiles('tox.ini') }}
+        restore-keys: |
+          ${{ runner.os }}-tox-
     - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
