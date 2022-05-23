@@ -97,6 +97,11 @@ app2:
 #### Group yml files **`*.yml`**
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
 
+## Config
+The `yaml_folder.yml` file also is the config file for the plugin. Following options exist.
+
+`EXCLUDE_LAST_GROUP_IN_NAME` Exclude the group name from the instance name. (prod/haproxy/main.yml - false: `prod-haproxy-proxy1`, true: `prod-proxy1`)
+
 ## Run tests
 To run tests for all python versions just use `tox`
 ```
