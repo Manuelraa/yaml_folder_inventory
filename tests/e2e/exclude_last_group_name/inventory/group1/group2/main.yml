@@ -1,0 +1,6 @@
+# Defined as dict/object
+host1:
+  ansible_host: host1
+
+host2:
+  ansible_host: host2

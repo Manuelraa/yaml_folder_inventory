@@ -1,0 +1,38 @@
+{
+    "_meta": {
+        "hostvars": {
+            "group1-host1": {
+                "ansible_host": "host1"
+            },
+            "group1-host2": {
+                "ansible_host": "host2"
+            },
+            "group3-host3": {
+                "ansible_host": "host3"
+            },
+            "group3-host4": {
+                "ansible_host": "host4"
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "group2",
+            "group4",
+            "ungrouped"
+        ]
+    },
+    "group2": {
+        "hosts": [
+            "group1-host1",
+            "group1-host2"
+        ]
+    },
+    "group4": {
+        "hosts": [
+            "group3-host3",
+            "group3-host4"
+        ]
+    },
+    "ungrouped": {}
+}
