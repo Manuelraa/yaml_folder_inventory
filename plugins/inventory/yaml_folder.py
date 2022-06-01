@@ -151,7 +151,7 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.set_variable(tree_level_group, varname, value)
 
     def _parse_hosts(
-        self, hosts_obj: Union[dict,str], hosts_path: Path, global_vars: dict, prefixes: List[str]
+        self, hosts_obj: Union[dict, str], hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
         DISPLAY.vvv(f"Parsing hosts: {hosts_path}")
@@ -162,7 +162,6 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 host_name_base = host_obj
                 host_vars = hosts_obj[host_obj]
-
 
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
