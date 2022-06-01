@@ -9,6 +9,11 @@ Can be found [here](https://github.com/Manuelraa/yaml_folder_inventory/tree/mast
 ## Need help? Missing feature? Bug?
 Please drop me a message! Open a issue whatever you like. I will try my best to help you!
 
+## Compatibility
+See: `tox.ini`
+
+supported/tested/covered by automatic tests: `python>=3.7` and `ansible>=2.5`
+
 ## Usage
 ```
 > ansible-galaxy collection install manuelraa.yaml_folder_inventory
