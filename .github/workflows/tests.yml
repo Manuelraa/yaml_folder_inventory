@@ -38,4 +38,4 @@ jobs:
         ansible-doc -M ./plugins/inventory/ yaml_folder
     - name: Run tests on all python versions with tox
       run: |
-        python3.10 -m tox --parallel auto
+        python3.10 -m tox --quiet --parallel auto
