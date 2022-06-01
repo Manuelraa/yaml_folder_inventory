@@ -15,14 +15,30 @@ from ansible.utils.display import Display
 
 
 DOCUMENTATION = """
-    name: yaml_folder
+    module: yaml_folder
     plugin_type: inventory
+    short_description: YAML folder inventory
+    description:
+      - Recursivly parsed a tree based folder structure and processes it into a single inventory
+    options:
+      exclude_last_group_in_name:
+        description: Changes behaviour if last group name is added to instance names or not
+        default: False
+        env:
+          - name: EXCLUDE_LAST_GROUP_IN_NAME
+        ini:
+          - section: inventory
+            key: exclude_last_group_in_name
+        required: False
+        type: bool
+        version_added: 1.4.0
     author:
         - Manuel Rapp (@manuelraa)
 """
 
 
 EXAMPLES = """
+# Example can be found in the github repo: https://github.com/Manuelraa/yaml_folder_inventory/tree/master/example
 """
 
 
@@ -30,7 +46,12 @@ TREE_LEVEL_GROUP_TEMPLTE = "__yaml_folder__{}{}"
 PREFIX_TEMPLATE = "{}{}-"
 
 
-def raise_wrong_type(template, obj, path):
+def yml_or_yaml(file_name: str):
+    """Return true if the file extension is '.yml' or '.yaml'."""
+    return file_name.split(".", -1)[1] in ("yml", "yaml")
+
+
+def raise_wrong_type(template: str, obj: object, path: str):
     """Function used to display wrong type messages during validation.
 
     Takes care of converting special ansible types
@@ -57,9 +78,6 @@ class YamlFolderDisplay(Display):
         super().display(f"[yaml_folder] {msg}", *args, **kwargs)
 
 
-DISPLAY = YamlFolderDisplay()
-
-
 class InventoryModule(BaseInventoryPlugin):
     """yaml_folder ansible inventory plugin."""
 
@@ -70,11 +88,10 @@ class InventoryModule(BaseInventoryPlugin):
     loader: DataLoader
 
     def __init__(self):
+        # Sets some defaults to instance variables (e.g. self.inventory = None)
         super().__init__()
 
-        # Set in self.parse function
-        self.inventory = None
-        self.loader = None
+        self.display = YamlFolderDisplay()
 
         # Config might be overriden in self.parse
         self.exclude_last_group_in_name = False
@@ -82,29 +99,22 @@ class InventoryModule(BaseInventoryPlugin):
     def verify_file(self, path: str) -> bool:
         """Return if the specified inventory path is valid."""
         valid = False
-        if super().verify_file(path) and path.endswith("/yaml_folder.yml"):
+        path_obj = Path(path)
+        if super().verify_file(path) \
+           and (path_obj.name.startswith("yaml_folder.") and yml_or_yaml(path_obj.name)):
             valid = True
         return valid
 
     def parse(self, inventory: InventoryData, loader: DataLoader, path: str, cache: bool = True):
         """Parse the inventory folder. Called by ansible."""
-        self.inventory = inventory
-        self.loader = loader
+        super().parse(inventory, loader, path, cache)
 
-        # Read config
-        yaml_folder_file = Path(path)
-        # Parse yaml
-        config = self.loader.load_from_file(str(yaml_folder_file), unsafe=True)
-        # Override config if set
-        if "EXCLUDE_LAST_GROUP_IN_NAME" in config:
-            value = config["EXCLUDE_LAST_GROUP_IN_NAME"]
-            if not isinstance(value, bool):
-                raise ValueError("Config value type for 'EXCLUDE_LAST_GROUP_IN_NAME' should be 'bool'")
-            self.exclude_last_group_in_name = config["EXCLUDE_LAST_GROUP_IN_NAME"]
+        # set config settings
+        self.exclude_last_group_in_name = self.get_option("exclude_last_group_in_name")
 
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
-        inventory_folder = yaml_folder_file.parent
-        DISPLAY.v(f"YAML Inventory: {inventory_folder}")
+        inventory_folder = Path(path).parent
+        self.display.v(f"YAML Inventory: {inventory_folder}")
         # Start recursion
         self._parse_inventory(inventory_folder)
 
@@ -124,12 +134,12 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _parse_group_vars(self, obj: dict, path: Path, prefixes: List[str]) -> None:
         """Parse group vars file. aka group_name.yml (haproxy.yml)"""
-        DISPLAY.vvv(f"Parsing group variables: {path}")
+        self.display.vvv(f"Parsing group variables: {path}")
 
         # Filename is group name
-        group = path.name.replace(".yml", "")
+        group = path.name.replace(".yml", "").replace(".yaml", "")
         tree_level_group = TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
-        DISPLAY.vvv(f"Group name / Tree level group name: {group} / {tree_level_group}")
+        self.display.vvv(f"Group name / Tree level group name: {group} / {tree_level_group}")
 
         # Add group if not exist
         self.inventory.add_group(group)
@@ -151,10 +161,10 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.set_variable(tree_level_group, varname, value)
 
     def _parse_hosts(
-        self, hosts_obj: Union[dict,str], hosts_path: Path, global_vars: dict, prefixes: List[str]
+        self, hosts_obj: Union[dict, str], hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
-        DISPLAY.vvv(f"Parsing hosts: {hosts_path}")
+        self.display.vvv(f"Parsing hosts: {hosts_path}")
         for host_obj in hosts_obj:
             # Allow for dict or list definition of main.yml files
             if isinstance(hosts_obj, list):
@@ -162,7 +172,6 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 host_name_base = host_obj
                 host_vars = hosts_obj[host_obj]
-
 
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
@@ -222,24 +231,24 @@ class InventoryModule(BaseInventoryPlugin):
         # Iter over dir files and folders
         for path in folder.iterdir():
             # Skip "yaml_folder.yml" file
-            if path.name == "yaml_folder.yml":
+            if path.name.startswith("yaml_folder") and yml_or_yaml(path.name):
                 continue
             # Recurse dirs after processing all files
             if path.is_dir():
                 sub_dirs.append(path)
                 continue
-            # Skip file not ending with ".yml"; Check must be after is_dir() check
-            if not path.name.endswith(".yml"):
+            # Skip file not ending with ".yml" or ".yaml"; Check must be after is_dir() check
+            if not yml_or_yaml(path.name):
                 continue
 
             # Parse yaml
             obj = self.loader.load_from_file(str(path))
 
             # Global vars apply to all groups
-            if path.name == "vars.yml":
+            if path.name.startswith("vars."):
                 global_vars.update(obj)
             # Add instances
-            elif path.name == "main.yml":
+            elif path.name.startswith("main."):
                 if not isinstance(obj, (dict, list)):
                     raise_wrong_type(
                         "[ERROR] Expected file content to be a dict/object. Got {}. File: {}",
@@ -258,7 +267,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Recurse into folders
         for sub_dir in sub_dirs:
-            DISPLAY.vvv(f"Recurse into folder: {sub_dir}")
+            self.display.vvv(f"Recurse into folder: {sub_dir}")
             prefixes.append(PREFIX_TEMPLATE.format(prefixes[-1], sub_dir.name))
             self._parse_inventory(sub_dir, global_vars, prefixes)
 

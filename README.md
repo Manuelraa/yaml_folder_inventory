@@ -103,14 +103,23 @@ app2:
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
 
 ## Config
-The `yaml_folder.yml` file also is the config file for the plugin. Following options exist.
+Configuration can be changed by putting the options into the `inventory` section of `ansible.cfg`.
+You can also set them as environment variables by using ALL_UPPERCASE name of the setting.
 
-`EXCLUDE_LAST_GROUP_IN_NAME` Exclude the group name from the instance name. (prod/haproxy/main.yml - false: `prod-haproxy-proxy1`, true: `prod-proxy1`)
+`exclude_last_group_in_name`: Exclude the group name from the instance name. (prod/haproxy/main.yml - false: `prod-haproxy-proxy1`, true: `prod-proxy1`)
 
 ## Run tests
+
+### tox
 To run tests for all python versions just use `tox`
 ```
 tox --parallel auto
+```
+
+### ansible-doc
+Ansible doc needs to succeed otherwise there is something wrong with the `DOCUMENTATION` variable in the plugin.
+```
+ansible-doc -M ./plugins/inventory/ yaml_folder
 ```
 
 ## Links

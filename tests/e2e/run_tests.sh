@@ -18,13 +18,18 @@ fi
 # Output version info (Output contains ansible and python version)
 echo "====Versions==="
 ansible-inventory --version
+echo "Using expected_file: '${expected_file}'"
 echo "==============="
 
 # Loop over all e2e tests
 for folder in $(find -maxdepth 1 -type d -not -name '.'); do
     # Get result
     echo "Testing: $folder"
-    ansible-inventory --list -i "$folder/inventory/yaml_folder.yml" | jq --sort-keys '.' > "$result_file"
+    cd "./$folder"
+    ANSIBLE_CONFIG="./ansible.cfg"
+    ansible-inventory --list | jq --sort-keys '.' > "../$result_file"
+    unset ANSIBLE_CONFIG
+    cd ".."
 
     # Get possible diff (Expected: No diff)
     echo "Diff < expected -- result >"
