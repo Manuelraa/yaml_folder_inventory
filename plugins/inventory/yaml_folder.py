@@ -251,7 +251,7 @@ class InventoryModule(BaseInventoryPlugin):
             elif path.name.startswith("main."):
                 if not isinstance(obj, (dict, list)):
                     raise_wrong_type(
-                        "[ERROR] Expected file content to be a dict/object. Got {}. File: {}",
+                        "[ERROR] Expected file content to be a dict/object or list. Got {}. File: {}",
                         obj,
                         path,
                     )
