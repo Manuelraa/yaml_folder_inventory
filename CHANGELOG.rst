@@ -4,6 +4,19 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.3.0
+========
+
+Major Changes
+-------------
+- Allow main.yml file to be a yaml list
+- Allow yaml_folder.yml to act as a config
+- Allow removing last folder name from instance name 
+
+Bugfixes
+--------
+- Wrong type error causes crash because of wrong function name
+
 v1.2.4
 ========
 - Ansible Galaxy import of 1.2.3 failed and I'm not able to upload same version again. So I have to change the version number.

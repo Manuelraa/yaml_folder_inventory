@@ -1,6 +1,9 @@
 """yaml_folder ansible inventory plugin."""
 from pathlib import Path
-from typing import List
+from typing import (
+    List,
+    Union,
+)
 
 from ansible.cli import display
 from ansible.inventory.data import InventoryData
@@ -49,9 +52,9 @@ class YamlFolderDisplay(Display):
 
     # pylint: disable=too-many-arguments
     def display(
-        self, msg, color=None, stderr=False, screen_only=False, log_only=False, newline=True
+        self, msg, *args, **kwargs
     ):
-        super().display(f"[yaml_folder] {msg}", color, stderr, screen_only, log_only, newline)
+        super().display(f"[yaml_folder] {msg}", *args, **kwargs)
 
 
 DISPLAY = YamlFolderDisplay()
@@ -73,12 +76,14 @@ class InventoryModule(BaseInventoryPlugin):
         self.inventory = None
         self.loader = None
 
+        # Config might be overriden in self.parse
+        self.exclude_last_group_in_name = False
+
     def verify_file(self, path: str) -> bool:
         """Return if the specified inventory path is valid."""
         valid = False
-        if super().verify_file(path):
-            if path.endswith("/yaml_folder.yml"):
-                valid = True
+        if super().verify_file(path) and path.endswith("/yaml_folder.yml"):
+            valid = True
         return valid
 
     def parse(self, inventory: InventoryData, loader: DataLoader, path: str, cache: bool = True):
@@ -86,8 +91,19 @@ class InventoryModule(BaseInventoryPlugin):
         self.inventory = inventory
         self.loader = loader
 
+        # Read config
+        yaml_folder_file = Path(path)
+        # Parse yaml
+        config = self.loader.load_from_file(str(yaml_folder_file), unsafe=True)
+        # Override config if set
+        if "EXCLUDE_LAST_GROUP_IN_NAME" in config:
+            value = config["EXCLUDE_LAST_GROUP_IN_NAME"]
+            if not isinstance(value, bool):
+                raise ValueError("Config value type for 'EXCLUDE_LAST_GROUP_IN_NAME' should be 'bool'")
+            self.exclude_last_group_in_name = config["EXCLUDE_LAST_GROUP_IN_NAME"]
+
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
-        inventory_folder = Path(path).parent
+        inventory_folder = yaml_folder_file.parent
         DISPLAY.v(f"YAML Inventory: {inventory_folder}")
         # Start recursion
         self._parse_inventory(inventory_folder)
@@ -135,17 +151,28 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.set_variable(tree_level_group, varname, value)
 
     def _parse_hosts(
-        self, hosts_obj: dict, hosts_path: Path, global_vars: dict, prefixes: List[str]
+        self, hosts_obj: Union[dict,str], hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
         DISPLAY.vvv(f"Parsing hosts: {hosts_path}")
-        for (host_name_base, host_vars) in hosts_obj.items():
+        for host_obj in hosts_obj:
+            # Allow for dict or list definition of main.yml files
+            if isinstance(hosts_obj, list):
+                (host_name_base, host_vars) = next(iter(host_obj.items()))
+            else:
+                host_name_base = host_obj
+                host_vars = hosts_obj[host_obj]
+
+
             # If no vars are define for host object it is parsed as None
             if host_vars is None:
                 host_vars = {}
 
             # Build host_name
-            host_name = f"{prefixes[-1]}{host_name_base}"
+            if self.exclude_last_group_in_name:
+                host_name = f"{prefixes[-2]}{host_name_base}"
+            else:
+                host_name = f"{prefixes[-1]}{host_name_base}"
 
             # Combine host_vars with other vars collected
             combined_vars = global_vars.copy()
@@ -213,8 +240,8 @@ class InventoryModule(BaseInventoryPlugin):
                 global_vars.update(obj)
             # Add instances
             elif path.name == "main.yml":
-                if not isinstance(obj, dict):
-                    DISPLAY.wrong_type(
+                if not isinstance(obj, (dict, list)):
+                    raise_wrong_type(
                         "[ERROR] Expected file content to be a dict/object. Got {}. File: {}",
                         obj,
                         path,

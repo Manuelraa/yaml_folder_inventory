@@ -9,6 +9,11 @@ Can be found [here](https://github.com/Manuelraa/yaml_folder_inventory/tree/mast
 ## Need help? Missing feature? Bug?
 Please drop me a message! Open a issue whatever you like. I will try my best to help you!
 
+## Compatibility
+See: `tox.ini`
+
+supported/tested/covered by automatic tests: `python>=3.7` and `ansible>=2.5`
+
 ## Usage
 ```
 > ansible-galaxy collection install manuelraa.yaml_folder_inventory
@@ -96,6 +101,11 @@ app2:
 
 #### Group yml files **`*.yml`**
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
+
+## Config
+The `yaml_folder.yml` file also is the config file for the plugin. Following options exist.
+
+`EXCLUDE_LAST_GROUP_IN_NAME` Exclude the group name from the instance name. (prod/haproxy/main.yml - false: `prod-haproxy-proxy1`, true: `prod-proxy1`)
 
 ## Run tests
 To run tests for all python versions just use `tox`
