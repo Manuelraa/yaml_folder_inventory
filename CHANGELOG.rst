@@ -4,12 +4,21 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
-v1.3.1
+v1.4.0
 ========
 
 Breaking Changes
 ----------------
 - Rename option :code:`EXCLUDE_LAST_GROUP_IN_NAME` to :code:`exclude_last_group_in_name` 
+- Moved config from :code:`yaml_folder.yml` to :code:`ansible.cfg`
+
+Major Changes
+-------------
+- Allow both :code:`.yml` and :code:`.yaml` file ending
+
+Minor Changes
+-------------
+- Little code cleanups
 
 v1.3.0
 ========

@@ -32,7 +32,10 @@ jobs:
     - name: Install dependencies
       run: |
         python3.10 -m pip install --upgrade pip
-        python3.10 -m pip install --upgrade setuptools wheel tox
+        python3.10 -m pip install --upgrade setuptools wheel tox ansible
+    - name: Run ansible-doc
+      run: |
+        ansible-doc -M ./plugins/inventory/ yaml_folder
     - name: Run tests on all python versions with tox
       run: |
-        python3.10 -m tox
+        python3.10 -m tox --parallel auto
