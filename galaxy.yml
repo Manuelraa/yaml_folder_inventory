@@ -1,6 +1,6 @@
 namespace: manuelraa
 name: yaml_folder_inventory
-version: 1.3.0
+version: 1.4.0
 readme: README.md
 authors:
   - Manuel Rapp (https://github.com/Manuelraa)
