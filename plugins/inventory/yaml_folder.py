@@ -1,6 +1,9 @@
 """yaml_folder ansible inventory plugin."""
 from pathlib import Path
-from typing import List
+from typing import (
+    List,
+    Union,
+)
 
 from ansible.cli import display
 from ansible.inventory.data import InventoryData
@@ -148,7 +151,7 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.set_variable(tree_level_group, varname, value)
 
     def _parse_hosts(
-        self, hosts_obj: dict, hosts_path: Path, global_vars: dict, prefixes: List[str]
+        self, hosts_obj: Union[dict,str], hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
         """Parse hosts file. aka main.yml"""
         DISPLAY.vvv(f"Parsing hosts: {hosts_path}")
@@ -157,7 +160,8 @@ class InventoryModule(BaseInventoryPlugin):
             if isinstance(hosts_obj, list):
                 (host_name_base, host_vars) = next(iter(host_obj.items()))
             else:
-                (host_name_base, host_vars) = host_obj
+                host_name_base = host_obj
+                host_vars = hosts_obj[host_obj]
 
 
             # If no vars are define for host object it is parsed as None
