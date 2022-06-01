@@ -1,0 +1,6 @@
+# Defined as list
+- host3:
+    ansible_host: host3
+
+- host4:
+    ansible_host: host4
