@@ -31,7 +31,7 @@ DOCUMENTATION = """
             key: exclude_last_group_in_name
         required: False
         type: bool
-        version_added: 1.3.1
+        version_added: 1.4.0
     author:
         - Manuel Rapp (@manuelraa)
 """
