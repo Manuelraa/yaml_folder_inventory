@@ -46,11 +46,12 @@ TREE_LEVEL_GROUP_TEMPLTE = "__yaml_folder__{}{}"
 PREFIX_TEMPLATE = "{}{}-"
 
 
-def yml_or_yaml(file_name):
+def yml_or_yaml(file_name: str):
+    """Return true if the file extension is '.yml' or '.yaml'."""
     return file_name.split(".", -1)[1] in ("yml", "yaml")
 
 
-def raise_wrong_type(template, obj, path):
+def raise_wrong_type(template: str, obj: object, path: str):
     """Function used to display wrong type messages during validation.
 
     Takes care of converting special ansible types
