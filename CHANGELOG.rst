@@ -4,6 +4,13 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.4.1
+========
+
+Bugfixes
+--------
+- Fix yaml file extension check not working as intendet if file had no extension or more then one extension
+
 v1.4.0
 ========
 

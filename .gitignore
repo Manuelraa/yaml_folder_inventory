@@ -1,3 +1,6 @@
+# Build
+dist/
+
 # Ansible galaxy
 *.tar.gz
 
