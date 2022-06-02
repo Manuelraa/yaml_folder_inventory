@@ -76,7 +76,7 @@ This will be converted to:
 - simu-web-web1
 ```
 
-### Special files
+### Special yml files
 #### **`vars.yml`**
 Variables applied recusive down the tree branch
 ```yml
@@ -101,6 +101,11 @@ app2:
 
 #### Group yml files **`*.yml`**
 All other `.yml` files which are neither `main.yml` or `var.yml` are group_var files which are applied recusivly down the inventory
+
+### Special variables
+| variable | default               | type      | description                                      |
+| -------- | --------------------- | --------- | ------------------------------------------------ |
+| groups   | 'Name of last folder' | List[str] | The instance is added to all groups of this list |
 
 ## Config
 Configuration can be changed by putting the options into the `inventory` section of `ansible.cfg`.

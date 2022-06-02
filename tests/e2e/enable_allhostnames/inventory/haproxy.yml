@@ -1,0 +1,2 @@
+# Global haproxy group vars
+haproxy_global_variable: "Hi! I'm a test variable defined in inventory/haproxy.yml"

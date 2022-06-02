@@ -1,0 +1,18 @@
+{
+    "_meta": {
+        "hostvars": {
+            "test_group-test-instance1": {}
+        }
+    },
+    "all": {
+        "children": [
+            "test_group",
+            "ungrouped"
+        ]
+    },
+    "test_group": {
+        "hosts": [
+            "test_group-test-instance1"
+        ]
+    }
+}

@@ -32,6 +32,17 @@ DOCUMENTATION = """
         required: False
         type: bool
         version_added: 1.4.0
+      enable_allhostnames:
+        description: Adds special 'allhostnames' group which contains all ansible_hosts instead of the instance name
+        default: False
+        env:
+          - name: ENABLE_ALLHOSTNAMES
+        ini:
+          - section: inventory
+            key: enable_allhostnames
+        required: False
+        type: bool
+        version_added: 1.4.2
     author:
         - Manuel Rapp (@manuelraa)
 """
@@ -42,6 +53,8 @@ EXAMPLES = """
 """
 
 
+ALLHOSTNAMES = "allhostnames"
+ANSIBLE_HOST = "ansible_host"
 TREE_LEVEL_GROUP_TEMPLTE = "__yaml_folder__{}{}"
 PREFIX_TEMPLATE = "{}{}-"
 
@@ -95,6 +108,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Config might be overriden in self.parse
         self.exclude_last_group_in_name = False
+        self.enable_allhostnames = False
 
     def verify_file(self, path: str) -> bool:
         """Return if the specified inventory path is valid."""
@@ -111,6 +125,11 @@ class InventoryModule(BaseInventoryPlugin):
 
         # set config settings
         self.exclude_last_group_in_name = self.get_option("exclude_last_group_in_name")
+        self.enable_allhostnames = self.get_option("enable_allhostnames")
+
+        # Add 'allhostnames' group if enabled
+        if self.enable_allhostnames:
+            self.inventory.add_group(ALLHOSTNAMES)
 
         # Inventory folder to parse is the one containing the "yaml_folder.yml" file
         inventory_folder = Path(path).parent
@@ -160,6 +179,7 @@ class InventoryModule(BaseInventoryPlugin):
         for (varname, value) in tree_level_group_vars.items():
             self.inventory.set_variable(tree_level_group, varname, value)
 
+    # pylint: disable=too-many-locals
     def _parse_hosts(
         self, hosts_obj: Union[dict, str], hosts_path: Path, global_vars: dict, prefixes: List[str]
     ) -> None:
@@ -206,6 +226,11 @@ class InventoryModule(BaseInventoryPlugin):
                 # Set variables for host
                 for (varname, value) in combined_vars.items():
                     self.inventory.set_variable(host_name, varname, value)
+
+            # Add hosts to 'allhostnames' if enabled
+            if self.enable_allhostnames:
+                ansible_host = self.inventory.get_host(host_name).get_vars().get(ANSIBLE_HOST, host_name)
+                self.inventory.add_host(ansible_host, ALLHOSTNAMES)
 
     # pylint: disable=too-many-branches
     def _parse_inventory(self, folder: Path, global_vars: dict = None, prefixes: List[str] = None):

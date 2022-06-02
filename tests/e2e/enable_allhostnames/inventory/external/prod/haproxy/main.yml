@@ -1,0 +1,7 @@
+haproxy-db1:
+  ansible_host: haproxy1.prod.external.example.localhost
+
+haproxy-db2:
+  ansible_host: haproxy2.prod.external.example.localhost
+  # Second node should load balance starting from secondary datacenter
+  backend_servers: "{{ backend_servers_dc2 + backend_servers_dc1 }}"
