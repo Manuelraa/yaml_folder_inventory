@@ -1,0 +1,9 @@
+backend_servers_dc1:
+  - cool-app1.prod.external.example.localhost
+  - cool-app3.prod.external.example.localhost
+
+backend_servers_dc2:
+  - cool-app2.prod.external.example.localhost
+  - cool-app4.prod.external.example.localhost
+
+backend_servers: "{{ backend_servers_dc1 + backend_servers_dc2 }}"
