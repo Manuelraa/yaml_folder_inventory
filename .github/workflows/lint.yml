@@ -18,7 +18,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint ansible
+        pip install flake8 pylint ansible
     - name: Analysing the code with pylint
       run: |
         pylint plugins/inventory/yaml_folder.py
+    - name: Analysing the code with flake8
+      run: |
+        flake8 plugins/inventory/yaml_folder.py

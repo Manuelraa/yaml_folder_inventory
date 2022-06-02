@@ -4,6 +4,13 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.4.2
+========
+
+Major Changes
+-------------
+- Add option :code:`enable_allhostnames` which adds special group to inventory containing all ansible_hosts found in inventory
+
 v1.4.1
 ========
 
