@@ -11,8 +11,8 @@ result_file="result-$RANDOM.json"
 ansible_version=$(pip list 2>/dev/null | grep "ansible " | tr  -s ' ' | cut -d ' ' -f 2)
 if [[ "$ansible_version" == "2.5"* || "$ansible_version" == "2.6"* || "$ansible_version" == "2.7"* ]]; then
     expected_file='old-expected.json'
-else
-    expected_file='expected.json'
+elif [[ "$ansible_version" == "2.8"* ]]; then
+    expected_file='28-expected.json'
 fi
 
 # Output version info (Output contains ansible and python version)
