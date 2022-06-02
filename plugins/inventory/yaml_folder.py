@@ -48,7 +48,7 @@ PREFIX_TEMPLATE = "{}{}-"
 
 def yml_or_yaml(file_name: str):
     """Return true if the file extension is '.yml' or '.yaml'."""
-    return file_name.split(".", -1)[1] in ("yml", "yaml")
+    return file_name.rsplit(".", 1)[-1] in ("yml", "yaml")
 
 
 def raise_wrong_type(template: str, obj: object, path: str):
@@ -239,6 +239,7 @@ class InventoryModule(BaseInventoryPlugin):
                 continue
             # Skip file not ending with ".yml" or ".yaml"; Check must be after is_dir() check
             if not yml_or_yaml(path.name):
+                self.display.vvv(f"Skip non yaml file {path}")
                 continue
 
             # Parse yaml
@@ -251,7 +252,7 @@ class InventoryModule(BaseInventoryPlugin):
             elif path.name.startswith("main."):
                 if not isinstance(obj, (dict, list)):
                     raise_wrong_type(
-                        "[ERROR] Expected file content to be a dict/object. Got {}. File: {}",
+                        "[ERROR] Expected file content to be a dict/object or list. Got {}. File: {}",
                         obj,
                         path,
                     )
