@@ -6,36 +6,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
       with:
         path: ./.tox/
         key: ${{ runner.os }}-tox-${{ hashFiles('tox.ini') }}
         restore-keys: |
           ${{ runner.os }}-tox-
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
     - name: Set up Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: "3.10"
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: "3.9"
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: "3.8"
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.7"
     - name: Install dependencies
       run: |
-        python3.10 -m pip install --upgrade pip
-        python3.10 -m pip install --upgrade setuptools wheel tox ansible
+        python3.11 -m pip install --upgrade pip
+        python3.11 -m pip install --upgrade setuptools wheel tox ansible
+        python3.11 -m pip install --upgrade --requirement test-requirements.txt
     - name: Run ansible-doc
       run: |
         ansible-doc -M ./plugins/inventory/ yaml_folder
     - name: Run tests on all python versions with tox
       run: |
-        python3.10 -m tox --quiet --parallel auto
+        python3.11 -m tox --quiet --parallel auto
