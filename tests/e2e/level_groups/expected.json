@@ -1,0 +1,122 @@
+{
+    "_meta": {
+        "hostvars": {}
+    },
+    "all": {
+        "children": [
+            "ungrouped",
+            "apache",
+            "apache_backend",
+            "apache_backend_simu",
+            "simu",
+            "apache_backend_prod",
+            "prod",
+            "apache_frontend",
+            "apache_frontend_simu",
+            "apache_frontend_prod",
+            "haproxy",
+            "haproxy_frontend",
+            "haproxy_frontend_prod",
+            "haproxy_frontend_simu",
+            "haproxy_backend",
+            "haproxy_backend_prod",
+            "haproxy_backend_simu"
+        ]
+    },
+    "apache": {
+        "hosts": [
+            "apache-backend-simu-instance1",
+            "apache-backend-prod-instance1",
+            "apache-frontend-simu-instance1",
+            "apache-frontend-prod-instance1"
+        ]
+    },
+    "apache_backend": {
+        "hosts": [
+            "apache-backend-simu-instance1",
+            "apache-backend-prod-instance1"
+        ]
+    },
+    "apache_backend_prod": {
+        "hosts": [
+            "apache-backend-prod-instance1"
+        ]
+    },
+    "apache_backend_simu": {
+        "hosts": [
+            "apache-backend-simu-instance1"
+        ]
+    },
+    "apache_frontend": {
+        "hosts": [
+            "apache-frontend-simu-instance1",
+            "apache-frontend-prod-instance1"
+        ]
+    },
+    "apache_frontend_prod": {
+        "hosts": [
+            "apache-frontend-prod-instance1"
+        ]
+    },
+    "apache_frontend_simu": {
+        "hosts": [
+            "apache-frontend-simu-instance1"
+        ]
+    },
+    "haproxy": {
+        "hosts": [
+            "haproxy-frontend-prod-instance1",
+            "haproxy-frontend-simu-instance1",
+            "haproxy-backend-prod-instance1",
+            "haproxy-backend-simu-instance1"
+        ]
+    },
+    "haproxy_backend": {
+        "hosts": [
+            "haproxy-backend-prod-instance1",
+            "haproxy-backend-simu-instance1"
+        ]
+    },
+    "haproxy_backend_prod": {
+        "hosts": [
+            "haproxy-backend-prod-instance1"
+        ]
+    },
+    "haproxy_backend_simu": {
+        "hosts": [
+            "haproxy-backend-simu-instance1"
+        ]
+    },
+    "haproxy_frontend": {
+        "hosts": [
+            "haproxy-frontend-prod-instance1",
+            "haproxy-frontend-simu-instance1"
+        ]
+    },
+    "haproxy_frontend_prod": {
+        "hosts": [
+            "haproxy-frontend-prod-instance1"
+        ]
+    },
+    "haproxy_frontend_simu": {
+        "hosts": [
+            "haproxy-frontend-simu-instance1"
+        ]
+    },
+    "prod": {
+        "hosts": [
+            "apache-backend-prod-instance1",
+            "apache-frontend-prod-instance1",
+            "haproxy-frontend-prod-instance1",
+            "haproxy-backend-prod-instance1"
+        ]
+    },
+    "simu": {
+        "hosts": [
+            "apache-backend-simu-instance1",
+            "apache-frontend-simu-instance1",
+            "haproxy-frontend-simu-instance1",
+            "haproxy-backend-simu-instance1"
+        ]
+    }
+}

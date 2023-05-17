@@ -1,0 +1,4 @@
+# Group of instance should only be `another-group`
+instance1:
+  extra_groups:
+    - extra_group

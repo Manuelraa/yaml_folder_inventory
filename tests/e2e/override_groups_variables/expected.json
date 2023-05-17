@@ -1,0 +1,61 @@
+{
+    "__yaml_folder__another_group": {
+        "hosts": [
+            "second_group-instance1",
+            "third_group-instance1"
+        ]
+    },
+    "__yaml_folder__first_group": {
+        "hosts": [
+            "first_group-instance1"
+        ]
+    },
+    "__yaml_folder__third_group": {
+        "hosts": [
+            "third_group-instance1"
+        ]
+    },
+    "_meta": {
+        "hostvars": {
+            "first_group-instance1": {
+                "first_var": 1
+            },
+            "second_group-instance1": {
+                "another_var": 4
+            },
+            "third_group-instance1": {
+                "another_var": 4,
+                "third_var": 3
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "ungrouped",
+            "another_group",
+            "__yaml_folder__another_group",
+            "first_group",
+            "__yaml_folder__first_group",
+            "second_group",
+            "__yaml_folder__second_group",
+            "third_group",
+            "__yaml_folder__third_group"
+        ]
+    },
+    "another_group": {
+        "hosts": [
+            "second_group-instance1",
+            "third_group-instance1"
+        ]
+    },
+    "first_group": {
+        "hosts": [
+            "first_group-instance1"
+        ]
+    },
+    "third_group": {
+        "hosts": [
+            "third_group-instance1"
+        ]
+    }
+}

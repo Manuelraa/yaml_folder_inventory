@@ -154,7 +154,7 @@ class E2ETester:
         actuall_inventory = json.loads(stdout.decode())
 
         # Compare expected and actuall inventory
-        diff = DeepDiff(expected_inventory, actuall_inventory)
+        diff = DeepDiff(expected_inventory, actuall_inventory, ignore_order=True)
         if diff:
             logging.error("Found difference: %s", diff)
             raise TestError("Expected and actuall inventory are diffrent")

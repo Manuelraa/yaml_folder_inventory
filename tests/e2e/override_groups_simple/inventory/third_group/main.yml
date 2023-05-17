@@ -1,0 +1,5 @@
+# Group of instance should be `third-group` and `another-group`
+instance1:
+  groups:
+    - third_group
+    - another_group

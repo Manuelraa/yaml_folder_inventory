@@ -1,0 +1,28 @@
+{
+    "_meta": {
+        "hostvars": {}
+    },
+    "all": {
+        "children": [
+            "ungrouped",
+            "first_group",
+            "second_group",
+            "extra_group"
+        ]
+    },
+    "extra_group": {
+        "hosts": [
+            "second_group-instance1"
+        ]
+    },
+    "first_group": {
+        "hosts": [
+            "first_group-instance1"
+        ]
+    },
+    "second_group": {
+        "hosts": [
+            "second_group-instance1"
+        ]
+    }
+}
