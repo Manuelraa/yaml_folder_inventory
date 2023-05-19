@@ -124,16 +124,19 @@ All other `.yml` files which are neither `main.yml` or `var.yml` are group_var f
 | variable       | default               | type      | description                                             |
 | -------------- | --------------------- | --------- | ------------------------------------------------------- |
 | groups         | 'Name of last folder' | List[str] | Override groups the host will be added to               |
-| extra_groups   |                       | List[str] | Add extra groups to the host. Does not override groups. |
+| extra_groups   | None                  | List[str] | Add extra groups to the host. Does not override groups. |
 
 ## Config
 
 Configuration can be changed by putting the options into the `inventory` section of `ansible.cfg`.
 You can also set them as environment variables by using ALL_UPPERCASE name of the setting.
 
-`exclude_last_group_in_name`: Exclude the group name from the instance name. (prod/haproxy/main.yml - false: `prod-haproxy-proxy1`, true: `prod-proxy1`)
-`enable_allhostnames`: When enabled generate special ansible group `allhostnames` which contains hosts with `ansible_host` as name.
-`enable_level_groups`: When enabled generate a group for each inventory level containing all hosts of this level.
+| config_key                 | env_var                    | default | description                                                                                                                |
+|----------------------------|----------------------------|---------|----------------------------------------------------------------------------------------------------------------------------|
+| exclude_last_group_in_name | EXCLUDE_LAST_GROUP_IN_NAME | false   | Exclude the group name from the instance name. (prod/haproxy/main.yml - false: `prod-haproxy-proxy1`, true: `prod-proxy1`) |
+| enable_allhostnames        | ENABLE_ALLHOSTNAMES        | false   | When enabled generate special ansible group `allhostnames` which contains hosts with `ansible_host` as name.               |
+| enable_level_groups        | ENABLE_LEVEL_GROUPS        | false   | When enabled generate a group for each inventory level containing all hosts of this level.                                 |
+
 
 ## Run tests
 
