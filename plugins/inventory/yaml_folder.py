@@ -9,7 +9,10 @@ from ansible.cli import display
 from ansible.inventory.data import InventoryData
 from ansible.inventory.group import Group
 from ansible.parsing.dataloader import DataLoader
-from ansible.parsing.yaml.objects import AnsibleSequence
+from ansible.parsing.yaml.objects import (
+    AnsibleSequence,
+    AnsibleUnicode,
+)
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.utils.display import Display
 
@@ -83,6 +86,8 @@ def raise_wrong_type(template: str, obj: object, path: str):
     """
     if isinstance(obj, AnsibleSequence):
         obj_type = list
+    elif isinstance(obj, AnsibleUnicode):
+        obj_type = str
     else:
         obj_type = type(obj)
     msg = template.format(obj_type, path)
@@ -242,7 +247,7 @@ class InventoryModule(BaseInventoryPlugin):
             if not isinstance(groups, list):
                 raise_wrong_type(
                     "[ERROR] Expected 'groups' variable to be a list. Got {}. File: {}",
-                    repr(groups),
+                    groups,
                     hosts_path,
                 )
 
@@ -251,7 +256,7 @@ class InventoryModule(BaseInventoryPlugin):
             if not isinstance(extra_groups, list):
                 raise_wrong_type(
                     "[ERROR] Expected 'extra_groups' variable to be a list. Got {}. File: {}",
-                    repr(extra_groups),
+                    extra_groups,
                     hosts_path,
                 )
             groups.extend(extra_groups)
