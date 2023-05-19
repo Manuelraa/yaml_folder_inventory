@@ -43,6 +43,17 @@ DOCUMENTATION = """
         required: False
         type: bool
         version_added: 1.4.2
+      enable_level_groups:
+        description: When enabled generate a group for each inventory level containing all hosts of this level.
+        default: False
+        env:
+          - name: ENABLE_LEVEL_GROUPS
+        ini:
+          - section: inventory
+            key: enable_level_groups
+        required: False
+        type: bool
+        version_added: 1.5.0
     author:
         - Manuel Rapp (@manuelraa)
 """
@@ -85,9 +96,7 @@ class YamlFolderDisplay(Display):
         super().__init__(verbosity=display.verbosity)
 
     # pylint: disable=too-many-arguments
-    def display(
-        self, msg, *args, **kwargs
-    ):
+    def display(self, msg, *args, **kwargs):
         super().display(f"[yaml_folder] {msg}", *args, **kwargs)
 
 
@@ -109,23 +118,32 @@ class InventoryModule(BaseInventoryPlugin):
         # Config might be overriden in self.parse
         self.exclude_last_group_in_name = False
         self.enable_allhostnames = False
+        self.enable_level_groups = False
 
     def verify_file(self, path: str) -> bool:
         """Return if the specified inventory path is valid."""
         valid = False
         path_obj = Path(path)
-        if super().verify_file(path) \
-           and (path_obj.name.startswith("yaml_folder.") and yml_or_yaml(path_obj.name)):
+        if super().verify_file(path) and (
+            path_obj.name.startswith("yaml_folder.") and yml_or_yaml(path_obj.name)
+        ):
             valid = True
         return valid
 
-    def parse(self, inventory: InventoryData, loader: DataLoader, path: str, cache: bool = True):
+    def parse(
+        self,
+        inventory: InventoryData,
+        loader: DataLoader,
+        path: str,
+        cache: bool = True,
+    ):
         """Parse the inventory folder. Called by ansible."""
         super().parse(inventory, loader, path, cache)
 
         # set config settings
         self.exclude_last_group_in_name = self.get_option("exclude_last_group_in_name")
         self.enable_allhostnames = self.get_option("enable_allhostnames")
+        self.enable_level_groups = self.get_option("enable_level_groups")
 
         # Add 'allhostnames' group if enabled
         if self.enable_allhostnames:
@@ -157,8 +175,12 @@ class InventoryModule(BaseInventoryPlugin):
 
         # Filename is group name
         group = path.name.replace(".yml", "").replace(".yaml", "")
-        tree_level_group = TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace("-", "_")
-        self.display.vvv(f"Group name / Tree level group name: {group} / {tree_level_group}")
+        tree_level_group = TREE_LEVEL_GROUP_TEMPLTE.format(prefixes[-1], group).replace(
+            "-", "_"
+        )
+        self.display.vvv(
+            f"Group name / Tree level group name: {group} / {tree_level_group}"
+        )
 
         # Add group if not exist
         self.inventory.add_group(group)
@@ -176,15 +198,20 @@ class InventoryModule(BaseInventoryPlugin):
         tree_level_group_vars.update(obj)
 
         # Set variables to tree level group
-        for (varname, value) in tree_level_group_vars.items():
+        for varname, value in tree_level_group_vars.items():
             self.inventory.set_variable(tree_level_group, varname, value)
 
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-arguments
     def _parse_hosts(
-        self, hosts_obj: Union[dict, str], hosts_path: Path, global_vars: dict, prefixes: List[str]
+        self,
+        hosts_obj: Union[dict, str],
+        hosts_path: Path,
+        global_vars: dict,
+        prefixes: List[str],
+        additional_groups: List[str],
     ) -> None:
         """Parse hosts file. aka main.yml"""
-        self.display.vvv(f"Parsing hosts: {hosts_path}")
+        self.display.vvv(f"Parsing hosts: {hosts_path}, prefixes: {prefixes}")
         for host_obj in hosts_obj:
             # Allow for dict or list definition of main.yml files
             if isinstance(hosts_obj, list):
@@ -203,14 +230,40 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 host_name = f"{prefixes[-1]}{host_name_base}"
 
+            # Add host
+            self.inventory.add_host(host_name)
+
             # Combine host_vars with other vars collected
             combined_vars = global_vars.copy()
             combined_vars.update(host_vars)
 
             # Allow override of groups by defining the "groups" variable
             groups = combined_vars.pop("groups", None) or [hosts_path.parent.name]
+            if not isinstance(groups, list):
+                raise_wrong_type(
+                    "[ERROR] Expected 'groups' variable to be a list. Got {}. File: {}",
+                    repr(groups),
+                    hosts_path,
+                )
 
-            # Add host to specified group and set host variables
+            # Allow extra groups by defining the "extra_groups" variable
+            extra_groups = combined_vars.pop("extra_groups", [])
+            if not isinstance(extra_groups, list):
+                raise_wrong_type(
+                    "[ERROR] Expected 'extra_groups' variable to be a list. Got {}. File: {}",
+                    repr(extra_groups),
+                    hosts_path,
+                )
+            groups.extend(extra_groups)
+
+            # Add additional groups when defined
+            groups.extend(additional_groups)
+
+            # Set variables for host
+            for varname, value in combined_vars.items():
+                self.inventory.set_variable(host_name, varname, value)
+
+            # Add host to specified groups
             for group in groups:
                 # Add group if not exist
                 self.inventory.add_group(group)
@@ -223,17 +276,19 @@ class InventoryModule(BaseInventoryPlugin):
                 if tree_level_group:
                     self.inventory.add_host(host_name, tree_level_group.name)
 
-                # Set variables for host
-                for (varname, value) in combined_vars.items():
-                    self.inventory.set_variable(host_name, varname, value)
-
             # Add hosts to 'allhostnames' if enabled
             if self.enable_allhostnames:
-                ansible_host = self.inventory.get_host(host_name).get_vars().get(ANSIBLE_HOST, host_name)
+                ansible_host = (
+                    self.inventory.get_host(host_name)
+                    .get_vars()
+                    .get(ANSIBLE_HOST, host_name)
+                )
                 self.inventory.add_host(ansible_host, ALLHOSTNAMES)
 
     # pylint: disable=too-many-branches
-    def _parse_inventory(self, folder: Path, global_vars: dict = None, prefixes: List[str] = None):
+    def _parse_inventory(
+        self, folder: Path, global_vars: dict = None, prefixes: List[str] = None
+    ):
         """Recurse inventory folder and parse all group_vars, hosts etc."""
         # Default value for vars
         if global_vars is None:
@@ -287,9 +342,25 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 self._parse_group_vars(obj, path, prefixes)
 
+        # Add hosts to level group if enabled
+        if self.enable_level_groups:
+            # Generate level group name from prefixes and ensure it is added to inventory
+            # Prefix = 'level1-level2-' -> 'level1_level2'
+            level_groups = []
+            for prefix in prefixes:
+                if prefix == "":
+                    continue
+                level_group = prefix[:-1].replace("-", "_")
+                level_groups.append(level_group)
+                self.inventory.add_group(level_group)
+        else:
+            level_groups = []
+
         # Process hosts from host_obj
         if hosts_obj:
-            self._parse_hosts(hosts_obj, hosts_path, global_vars, prefixes)
+            self._parse_hosts(
+                hosts_obj, hosts_path, global_vars, prefixes, additional_groups=level_groups
+            )
 
         # Recurse into folders
         for sub_dir in sub_dirs:

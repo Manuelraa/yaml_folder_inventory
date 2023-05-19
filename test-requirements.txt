@@ -1,3 +1,7 @@
+tox
 pytest
 pytest-xdist
 pytest-mock
+deepdiff
+pylint
+black

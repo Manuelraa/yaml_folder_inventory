@@ -4,6 +4,18 @@ manuelraa.yaml_folder_inventory Release Notes
 
 .. contents:: Topics
 
+v1.5.0
+========
+
+Major Changes
+----------------
+- Add special variable :code:`extra_groups` which allows to add extra groups to hosts instead of overrideing like :code:`groups` does
+- Add option :code:`enable_level_groups` which automatically adds a group for each inventory level
+
+Minor Changes
+-------------
+- Add error if special :code:`groups` variable is not a list
+
 v1.4.2
 ========
 
